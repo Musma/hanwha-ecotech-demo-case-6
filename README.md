@@ -74,3 +74,5 @@ API client 설정 작업은 `api-client-orchestrator`를 상위 진입점으로 
 - 컴포넌트가 커지면 feature section, composable, helper, API wrapper로 책임을 분리한다.
 - 작업 완료 후에는 가능한 범위에서 lint 또는 관련 검증을 실행한다.
 - 성공적으로 검증된 변경은 Conventional Commits 형식으로 커밋한다.
+
+<!-- GitHub Pages deployment trigger -->
