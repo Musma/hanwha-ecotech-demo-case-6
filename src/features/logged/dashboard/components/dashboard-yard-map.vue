@@ -26,6 +26,7 @@ import {
   YARD_JIBUN_KIND_COLORS,
 } from '@/shared/constants/map-yard'
 import { buildGridGeoJson } from '@/shared/helpers/map/grid-utils'
+import { collapseMapAttribution } from '@/shared/helpers/map/map-control-utils'
 import { normalizeGridBoundaryCoordinates } from '@/shared/helpers/map/map-geo-helpers'
 import type {
   MapEntityMarkerItem,
@@ -586,8 +587,10 @@ function initializeMap() {
     pitch: 0,
     dragRotate: false,
     touchZoomRotate: true,
+    attributionControl: { compact: true },
   })
 
+  collapseMapAttribution(map)
   mapRef.value = map
   // 핀치 줌(확대/축소)은 허용하되, 야드 정렬 유지를 위해 두 손가락 회전은 비활성화한다.
   map.touchZoomRotate.disableRotation()

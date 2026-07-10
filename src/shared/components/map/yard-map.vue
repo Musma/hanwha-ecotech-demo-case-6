@@ -39,6 +39,7 @@ import {
   ensureGridLayer,
   type LatLng,
 } from '@/shared/helpers/map/grid-utils'
+import { collapseMapAttribution } from '@/shared/helpers/map/map-control-utils'
 import {
   createCircleCoordinates,
   ensureMeasurementLayers,
@@ -569,7 +570,10 @@ onMounted(async () => {
       bearing: props.bearing,
       pitch: 0,
       antialias: true,
+      attributionControl: { compact: true },
     })
+
+    collapseMapAttribution(map)
 
     map.dragRotate.disable()
     map.touchZoomRotate.disableRotation()
