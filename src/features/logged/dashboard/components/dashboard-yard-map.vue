@@ -72,7 +72,7 @@ const MAP_VIEW_COORDINATES: [
 ]
 
 const FIT_BOUNDS_PADDING = 20
-const INITIAL_ZOOM_OFFSET = 2
+const INITIAL_ZOOM_OFFSET = 1
 const YARD_GRID_SOURCE_ID = 'dashboard-yard-grid'
 const YARD_GRID_LAYER_ID = 'dashboard-yard-grid'
 const JIBUN_POLYGON_SOURCE_ID = 'dashboard-jibun-polygons'
