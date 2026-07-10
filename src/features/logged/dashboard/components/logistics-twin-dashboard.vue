@@ -67,6 +67,7 @@ const {
               <DashboardYardMap
                 class="absolute inset-0 rounded-none border-0"
                 :fixed-overlay-visible="true"
+                :grid-visible="true"
                 :map-style="DASHBOARD_DEFAULT_MAP_STYLE"
                 :polygons="jibunPolygons"
                 :map-markers="mapMarkers"
