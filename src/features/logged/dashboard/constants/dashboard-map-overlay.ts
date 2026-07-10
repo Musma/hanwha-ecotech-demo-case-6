@@ -1,8 +1,4 @@
-import {
-  DEFAULT_MAP_STYLE,
-  MAP_STYLE_OPTIONS,
-  type MapStyleOption,
-} from '@/shared/constants/map'
+import { MAP_STYLE_OPTIONS, type MapStyleOption } from '@/shared/constants/map'
 
 /**
  * 대시보드 지도 오버레이에서 사용하는 옵션 정의.
@@ -17,7 +13,7 @@ export interface DashboardToggleOption {
 
 export type DashboardMapTypeOption = MapStyleOption
 
-export const DASHBOARD_DEFAULT_MAP_STYLE = DEFAULT_MAP_STYLE
+export const DASHBOARD_DEFAULT_MAP_STYLE = 'vworld-base'
 
 export const DASHBOARD_MAP_TYPE_OPTIONS: DashboardMapTypeOption[] =
   MAP_STYLE_OPTIONS
