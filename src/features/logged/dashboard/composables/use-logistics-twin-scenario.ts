@@ -46,17 +46,26 @@ export function useLogisticsTwinScenario() {
   const mapMarkers = computed<MapEntityMarkerItem[]>(() => {
     if (currentStep.value < 3) return []
 
-    const obstructionMarkers = visibleObstructions.value.map((item) => ({
-      id: item.id,
-      label: item.label,
-      name: item.name,
-      phys: item.lngLat,
-      selected: currentStep.value >= 4 && item.id === selectedId.value,
-      tone:
-        getLogisticsTwinTone(item.days) === 'danger'
-          ? 'obstruction-danger'
-          : 'obstruction-warn',
-    }))
+    const obstructionMarkers = visibleObstructions.value
+      .filter(
+        (item) =>
+          !(
+            currentStep.value === 5 &&
+            dispatchConfirmed.value &&
+            item.id === targetObstruction.value?.id
+          ),
+      )
+      .map((item) => ({
+        id: item.id,
+        label: item.label,
+        name: item.name,
+        phys: item.lngLat,
+        selected: currentStep.value >= 4 && item.id === selectedId.value,
+        tone:
+          getLogisticsTwinTone(item.days) === 'danger'
+            ? 'obstruction-danger'
+            : 'obstruction-warn',
+      }))
 
     if (currentStep.value !== 5) return obstructionMarkers
 
@@ -67,12 +76,16 @@ export function useLogisticsTwinScenario() {
             id: 'scenario-vehicle',
             label: dispatchConfirmed.value ? '조치중' : '배차 대기',
             name: dispatchConfirmed.value ? '조치중 차량' : '대기 차량',
-            phys: [
-              target.lngLat[0] +
-                (LOGISTICS_TWIN_DROP_ZONE.lngLat[0] - target.lngLat[0]) * 0.3,
-              target.lngLat[1] +
-                (LOGISTICS_TWIN_DROP_ZONE.lngLat[1] - target.lngLat[1]) * 0.3,
-            ],
+            phys: dispatchConfirmed.value
+              ? target.lngLat
+              : [
+                  target.lngLat[0] +
+                    (LOGISTICS_TWIN_DROP_ZONE.lngLat[0] - target.lngLat[0]) *
+                      0.3,
+                  target.lngLat[1] +
+                    (LOGISTICS_TWIN_DROP_ZONE.lngLat[1] - target.lngLat[1]) *
+                      0.3,
+                ],
             tone: 'vehicle',
           },
         ]

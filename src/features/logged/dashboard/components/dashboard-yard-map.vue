@@ -12,7 +12,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import {
   WORK_TRACK_BASE_DASH_ARRAY,
   WORK_TRACK_FLOW_LAYER_ID,
-  WORK_TRACK_INITIAL_FLOW_DASH_ARRAY,
+  WORK_TRACK_INITIAL_FLOW_GRADIENT,
   startWorkTrackAnimation,
 } from '@/features/logged/dashboard/utils/work-track-animation'
 import { getMapLibreStyle } from '@/shared/constants/map'
@@ -327,6 +327,7 @@ function ensureWorkTrackLayer() {
     map.addSource(WORK_TRACK_SOURCE_ID, {
       type: 'geojson',
       data: createEmptyFeatureCollection(),
+      lineMetrics: true,
     })
   }
   if (!map.getLayer(WORK_TRACK_LAYER_ID)) {
@@ -339,9 +340,9 @@ function ensureWorkTrackLayer() {
         'line-join': 'round',
       },
       paint: {
-        'line-color': '#F97316',
+        'line-color': '#F37321',
         'line-width': 3,
-        'line-opacity': 0.55,
+        'line-opacity': 0.68,
         'line-dasharray': WORK_TRACK_BASE_DASH_ARRAY,
       },
     })
@@ -356,11 +357,10 @@ function ensureWorkTrackLayer() {
         'line-join': 'round',
       },
       paint: {
-        'line-color': '#FBB584',
-        'line-width': 5,
-        'line-opacity': 0.95,
-        'line-blur': 0.6,
-        'line-dasharray': WORK_TRACK_INITIAL_FLOW_DASH_ARRAY,
+        'line-width': 7,
+        'line-opacity': 1,
+        'line-blur': 1.8,
+        'line-gradient': WORK_TRACK_INITIAL_FLOW_GRADIENT,
       },
     })
   }
@@ -475,7 +475,7 @@ function updateMarkers() {
               : 'dashboard-map-marker--warning'
       el.className = `dashboard-map-marker ${markerToneClass}${marker.selected ? ' dashboard-map-marker--selected' : ''}`
       el.title = marker.name ?? marker.label ?? ''
-      if (marker.selected) {
+      if (marker.selected || marker.tone === 'vehicle') {
         const waves = Array.from({ length: 3 }, () => {
           const wave = document.createElement('span')
           wave.className = 'dashboard-map-marker__wave'

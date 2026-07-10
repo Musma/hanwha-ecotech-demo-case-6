@@ -187,6 +187,9 @@
 .dashboard-map-marker--vehicle .dashboard-map-marker__tag {
   gap: 4px;
   background: var(--color-hw-blue-dark);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-hw-blue-lighter) 55%, transparent),
+    0 4px 12px color-mix(in srgb, var(--color-hw-blue-darker) 38%, transparent);
 }
 
 .dashboard-map-marker--vehicle .dashboard-map-marker__tag > i {
@@ -220,6 +223,12 @@
 .dashboard-map-marker--danger .dashboard-map-marker__wave {
   border-color: color-mix(in srgb, var(--color-hw-red-main) 70%, transparent);
   background: color-mix(in srgb, var(--color-hw-red-lighter) 30%, transparent);
+}
+
+.dashboard-map-marker--vehicle .dashboard-map-marker__wave {
+  border-color: color-mix(in srgb, var(--color-hw-blue-dark) 68%, transparent);
+  background: color-mix(in srgb, var(--color-hw-blue-lighter) 30%, transparent);
+  animation-duration: 2.4s;
 }
 
 .dashboard-map-marker__wave:nth-child(2) {
