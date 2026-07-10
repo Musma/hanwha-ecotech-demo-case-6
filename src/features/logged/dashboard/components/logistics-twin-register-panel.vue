@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, useId, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 import type { LogisticsTwinPendingLocation } from '@/features/logged/dashboard/constants/logistics-twin-data'
 
@@ -12,8 +12,6 @@ const emit = defineEmits<{
   skipRegister: []
 }>()
 
-const fileInputId = useId()
-const fileInputRef = ref<HTMLInputElement | null>(null)
 const photo = ref<string | null>(null)
 const photoError = ref('')
 
@@ -25,7 +23,6 @@ watch(
   () => {
     photo.value = null
     photoError.value = ''
-    if (fileInputRef.value) fileInputRef.value.value = ''
   },
 )
 
@@ -104,16 +101,6 @@ function removePhoto() {
         </span>
       </div>
 
-      <input
-        :id="fileInputId"
-        ref="fileInputRef"
-        type="file"
-        accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-        :disabled="!pendingLocation"
-        class="sr-only"
-        aria-describedby="logistics-twin-photo-help"
-        @change="handlePhotoChange"
-      />
       <div
         v-if="photo"
         class="overflow-hidden rounded-md border border-hw-gray-lighter"
@@ -124,13 +111,19 @@ function removePhoto() {
           class="h-36 w-full object-cover"
         />
         <div class="grid grid-cols-2 border-t border-hw-gray-lighter">
-          <label
-            :for="fileInputId"
-            class="cursor-pointer px-3 py-2 text-center text-c1 font-semibold text-hw-gray-darker transition-colors hover:bg-hw-btn-hover"
+          <div
+            class="relative px-3 py-2 text-center text-c1 font-semibold text-hw-gray-darker transition-colors hover:bg-hw-btn-hover"
           >
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+              aria-label="현장 사진 다시 선택"
+              class="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+              @change="handlePhotoChange"
+            />
             <i class="ti ti-refresh mr-1" aria-hidden="true" />
             다시 선택
-          </label>
+          </div>
           <button
             type="button"
             class="border-l border-hw-gray-lighter px-3 py-2 text-c1 font-semibold text-hw-red-dark transition-colors hover:bg-hw-red-lighter"
@@ -141,17 +134,27 @@ function removePhoto() {
           </button>
         </div>
       </div>
-      <label
+      <div
         v-else-if="pendingLocation"
-        :for="fileInputId"
-        class="flex w-full cursor-pointer flex-col items-center gap-1 rounded-md border border-dashed border-hw-gray-lighter bg-hw-white-lighter p-4 text-center text-hw-gray-dark transition-colors hover:border-hw-orange-main hover:bg-hw-orange-lighter/20"
+        class="relative flex w-full cursor-pointer flex-col items-center gap-1 rounded-md border border-dashed border-hw-gray-lighter bg-hw-white-lighter p-4 text-center text-hw-gray-dark transition-colors hover:border-hw-orange-main hover:bg-hw-orange-lighter/20"
       >
-        <i class="ti ti-camera-plus text-h3 text-hw-orange-main" />
-        <span class="text-s2 font-semibold">현장 사진 업로드</span>
-        <small id="logistics-twin-photo-help" class="text-c1">
+        <input
+          type="file"
+          accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+          aria-label="현장 사진 업로드"
+          class="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+          @change="handlePhotoChange"
+        />
+        <i
+          class="pointer-events-none ti ti-camera-plus text-h3 text-hw-orange-main"
+        />
+        <span class="pointer-events-none text-s2 font-semibold">
+          현장 사진 업로드
+        </span>
+        <small class="pointer-events-none text-c1">
           클릭하여 JPG 또는 PNG 이미지를 첨부합니다
         </small>
-      </label>
+      </div>
       <div
         v-else
         aria-disabled="true"
