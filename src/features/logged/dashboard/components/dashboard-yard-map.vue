@@ -72,6 +72,7 @@ const MAP_VIEW_COORDINATES: [
 ]
 
 const FIT_BOUNDS_PADDING = 20
+const INITIAL_ZOOM_OFFSET = 2
 const YARD_GRID_SOURCE_ID = 'dashboard-yard-grid'
 const YARD_GRID_LAYER_ID = 'dashboard-yard-grid'
 const JIBUN_POLYGON_SOURCE_ID = 'dashboard-jibun-polygons'
@@ -505,7 +506,7 @@ function initializeMap() {
     map.jumpTo({
       bearing: YARD_DEFAULT_BEARING,
       pitch: 0,
-      zoom: map.getZoom(),
+      zoom: map.getZoom() + INITIAL_ZOOM_OFFSET,
     })
     mapLoaded.value = true
     ensureDashboardOverlayLayers()
