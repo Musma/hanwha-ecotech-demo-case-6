@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, useId, watch } from 'vue'
 
 import type { LogisticsTwinPendingLocation } from '@/features/logged/dashboard/constants/logistics-twin-data'
 
@@ -12,30 +12,46 @@ const emit = defineEmits<{
   skipRegister: []
 }>()
 
+const fileInputId = useId()
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const photo = ref<string | null>(null)
+const photoError = ref('')
+
+const SUPPORTED_PHOTO_TYPES = new Set(['image/jpeg', 'image/png'])
+const SUPPORTED_PHOTO_NAME_PATTERN = /\.(jpe?g|png)$/i
 
 watch(
   () => props.pendingLocation?.label,
   () => {
     photo.value = null
+    photoError.value = ''
     if (fileInputRef.value) fileInputRef.value.value = ''
   },
 )
-
-function openPhotoPicker() {
-  if (!props.pendingLocation) return
-  fileInputRef.value?.click()
-}
 
 function handlePhotoChange(event: Event) {
   const input = event.target as HTMLInputElement
   const file = input.files?.[0]
   if (!file) return
 
+  if (
+    !SUPPORTED_PHOTO_TYPES.has(file.type) &&
+    !SUPPORTED_PHOTO_NAME_PATTERN.test(file.name)
+  ) {
+    photo.value = null
+    photoError.value = 'JPG 또는 PNG 형식의 이미지만 업로드할 수 있습니다.'
+    input.value = ''
+    return
+  }
+
+  photoError.value = ''
   const reader = new FileReader()
   reader.addEventListener('load', () => {
     photo.value = typeof reader.result === 'string' ? reader.result : null
+  })
+  reader.addEventListener('error', () => {
+    photo.value = null
+    photoError.value = '사진을 불러오지 못했습니다. 다른 파일을 선택해 주세요.'
   })
   reader.readAsDataURL(file)
   input.value = ''
@@ -43,6 +59,7 @@ function handlePhotoChange(event: Event) {
 
 function removePhoto() {
   photo.value = null
+  photoError.value = ''
 }
 </script>
 
@@ -88,10 +105,13 @@ function removePhoto() {
       </div>
 
       <input
+        :id="fileInputId"
         ref="fileInputRef"
         type="file"
-        accept="image/*"
-        class="hidden"
+        accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+        :disabled="!pendingLocation"
+        class="sr-only"
+        aria-describedby="logistics-twin-photo-help"
         @change="handlePhotoChange"
       />
       <div
@@ -104,14 +124,13 @@ function removePhoto() {
           class="h-36 w-full object-cover"
         />
         <div class="grid grid-cols-2 border-t border-hw-gray-lighter">
-          <button
-            type="button"
-            class="px-3 py-2 text-c1 font-semibold text-hw-gray-darker transition-colors hover:bg-hw-btn-hover"
-            @click="openPhotoPicker"
+          <label
+            :for="fileInputId"
+            class="cursor-pointer px-3 py-2 text-center text-c1 font-semibold text-hw-gray-darker transition-colors hover:bg-hw-btn-hover"
           >
             <i class="ti ti-refresh mr-1" aria-hidden="true" />
             다시 선택
-          </button>
+          </label>
           <button
             type="button"
             class="border-l border-hw-gray-lighter px-3 py-2 text-c1 font-semibold text-hw-red-dark transition-colors hover:bg-hw-red-lighter"
@@ -122,23 +141,31 @@ function removePhoto() {
           </button>
         </div>
       </div>
-      <button
-        v-else
-        type="button"
-        class="flex w-full flex-col items-center gap-1 rounded-md border border-dashed border-hw-gray-lighter bg-hw-white-lighter p-4 text-center text-hw-gray-dark transition-colors hover:border-hw-orange-main hover:bg-hw-orange-lighter/20 disabled:cursor-not-allowed disabled:hover:border-hw-gray-lighter disabled:hover:bg-hw-white-lighter"
-        :disabled="!pendingLocation"
-        @click="openPhotoPicker"
+      <label
+        v-else-if="pendingLocation"
+        :for="fileInputId"
+        class="flex w-full cursor-pointer flex-col items-center gap-1 rounded-md border border-dashed border-hw-gray-lighter bg-hw-white-lighter p-4 text-center text-hw-gray-dark transition-colors hover:border-hw-orange-main hover:bg-hw-orange-lighter/20"
       >
         <i class="ti ti-camera-plus text-h3 text-hw-orange-main" />
         <span class="text-s2 font-semibold">현장 사진 업로드</span>
-        <small class="text-c1">
-          {{
-            pendingLocation
-              ? '클릭하여 실제 촬영 이미지를 첨부합니다'
-              : '먼저 지번을 선택하십시오'
-          }}
+        <small id="logistics-twin-photo-help" class="text-c1">
+          클릭하여 JPG 또는 PNG 이미지를 첨부합니다
         </small>
-      </button>
+      </label>
+      <div
+        v-else
+        aria-disabled="true"
+        class="flex w-full cursor-not-allowed flex-col items-center gap-1 rounded-md border border-dashed border-hw-gray-lighter bg-hw-white-lighter p-4 text-center text-hw-gray-dark"
+      >
+        <i class="ti ti-camera-plus text-h3 text-hw-gray-main" />
+        <span class="text-s2 font-semibold">현장 사진 업로드</span>
+        <small id="logistics-twin-photo-help" class="text-c1">
+          먼저 지번을 선택하십시오
+        </small>
+      </div>
+      <p v-if="photoError" role="alert" class="text-c1 text-hw-red-dark">
+        {{ photoError }}
+      </p>
 
       <div class="space-y-2">
         <label class="block text-c1 font-semibold text-hw-gray-dark">
