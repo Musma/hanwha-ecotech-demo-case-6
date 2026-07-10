@@ -91,9 +91,9 @@ export function useLogisticsTwinScenario() {
                 ? {
                     stop: target.lngLat,
                     destination: LOGISTICS_TWIN_DROP_ZONE.lngLat,
-                    approachDurationMs: 1000,
+                    approachDurationMs: 1800,
                     dwellDurationMs: 2000,
-                    departureDurationMs: 1800,
+                    departureDurationMs: 5000,
                   }
                 : undefined,
             },
