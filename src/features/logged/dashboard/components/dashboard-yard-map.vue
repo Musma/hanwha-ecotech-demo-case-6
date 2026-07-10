@@ -72,6 +72,13 @@ const MAP_VIEW_COORDINATES: [
 ]
 
 const FIT_BOUNDS_PADDING = 20
+const WORK_TRACK_FIT_BOUNDS_PADDING = {
+  top: 48,
+  right: 48,
+  bottom: 48,
+  // 이동 요청 패널(360px)과 패널의 좌측 여백(16px) 뒤에서 경로가 보이도록 한다.
+  left: 424,
+}
 const INITIAL_ZOOM_OFFSET = 1
 const YARD_GRID_SOURCE_ID = 'dashboard-yard-grid'
 const YARD_GRID_LAYER_ID = 'dashboard-yard-grid'
@@ -367,7 +374,11 @@ function updateWorkTrack() {
         [Math.min(...lngs), Math.min(...lats)],
         [Math.max(...lngs), Math.max(...lats)],
       ],
-      { padding: 48, bearing: YARD_DEFAULT_BEARING, duration: 600 },
+      {
+        padding: WORK_TRACK_FIT_BOUNDS_PADDING,
+        bearing: YARD_DEFAULT_BEARING,
+        duration: 600,
+      },
     )
   }
 }
