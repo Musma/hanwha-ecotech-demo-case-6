@@ -98,84 +98,96 @@ const {
                 </div>
               </DashboardYardMap>
 
-              <div
-                v-if="currentStep === 1"
-                class="main-scroll-style absolute inset-0 z-20 flex flex-col items-center justify-start overflow-y-auto bg-cover bg-center p-6 text-center text-hw-white-main lg:justify-center"
-                :style="{ backgroundImage: tabletBackgroundImage }"
+              <Transition
+                mode="out-in"
+                enter-active-class="transition duration-300 ease-smooth motion-reduce:transition-none"
+                enter-from-class="opacity-0 scale-[0.99]"
+                enter-to-class="opacity-100 scale-100"
+                leave-active-class="transition duration-200 ease-smooth motion-reduce:transition-none"
+                leave-from-class="opacity-100 scale-100"
+                leave-to-class="opacity-0 scale-[0.99]"
               >
                 <div
-                  class="absolute inset-0 bg-hw-gray-darker/55"
-                  aria-hidden="true"
-                />
-                <p class="relative z-10 text-h1 font-light">
-                  {{ currentTime }}
-                </p>
-                <p class="relative z-10 mt-1 text-c1 text-hw-gray-light">
-                  {{ currentDate }}
-                </p>
-                <div
-                  class="relative z-10 mt-6 w-full max-w-xl rounded-xl border border-hw-red-lighter bg-hw-white-main p-5 text-left text-hw-text-primary shadow-lg lg:mt-24"
-                >
-                  <p class="text-c1 text-hw-gray-main">
-                    에코텍 물류 · 현장 알림
-                  </p>
-                  <h2 class="mt-2 text-h5 font-bold text-hw-red-darker">
-                    도로 간섭물이 발견되었습니다
-                  </h2>
-                  <p class="mt-2 text-b3 text-hw-gray-dark">
-                    현장 작업 중 통행로에 적치된 간섭물을 확인했습니다.
-                  </p>
-                </div>
-                <TabletUnlockSlider
-                  class="relative z-10 mt-4 shrink-0 lg:mt-auto"
-                  @unlock="unlockTablet"
-                />
-              </div>
-
-              <div
-                v-else
-                class="absolute inset-y-4 left-4 z-20 w-[360px] max-w-[calc(100%-32px)]"
-              >
-                <div
-                  class="flex h-full flex-col overflow-hidden rounded-xl border border-hw-gray-lighter bg-hw-white-main shadow-lg"
+                  v-if="currentStep === 1"
+                  key="locked"
+                  class="main-scroll-style absolute inset-0 z-20 flex flex-col items-center justify-start overflow-y-auto bg-cover bg-center p-6 text-center text-hw-white-main lg:justify-center"
+                  :style="{ backgroundImage: tabletBackgroundImage }"
                 >
                   <div
-                    class="flex items-center justify-between border-b border-hw-gray-lighter px-4 py-3"
+                    class="absolute inset-0 bg-hw-gray-darker/55"
+                    aria-hidden="true"
+                  />
+                  <p class="relative z-10 text-h1 font-light">
+                    {{ currentTime }}
+                  </p>
+                  <p class="relative z-10 mt-1 text-c1 text-hw-gray-light">
+                    {{ currentDate }}
+                  </p>
+                  <div
+                    class="relative z-10 mt-6 w-full max-w-xl rounded-xl border border-hw-red-lighter bg-hw-white-main p-5 text-left text-hw-text-primary shadow-lg lg:mt-24"
                   >
-                    <div>
-                      <p class="text-c1 font-semibold text-hw-orange-main">
-                        물류 Twin
-                      </p>
-                      <h2 class="text-h6 font-bold text-hw-text-primary">
-                        도로 간섭물 이동 요청
-                      </h2>
+                    <p class="text-c1 text-hw-gray-main">
+                      에코텍 물류 · 현장 알림
+                    </p>
+                    <h2 class="mt-2 text-h5 font-bold text-hw-red-darker">
+                      도로 간섭물이 발견되었습니다
+                    </h2>
+                    <p class="mt-2 text-b3 text-hw-gray-dark">
+                      현장 작업 중 통행로에 적치된 간섭물을 확인했습니다.
+                    </p>
+                  </div>
+                  <TabletUnlockSlider
+                    class="relative z-10 mt-4 shrink-0 lg:mt-auto"
+                    @unlock="unlockTablet"
+                  />
+                </div>
+
+                <div
+                  v-else
+                  key="scenario"
+                  class="absolute inset-y-4 left-4 z-20 w-[360px] max-w-[calc(100%-32px)]"
+                >
+                  <div
+                    class="flex h-full flex-col overflow-hidden rounded-xl border border-hw-gray-lighter bg-hw-white-main shadow-lg"
+                  >
+                    <div
+                      class="flex items-center justify-between border-b border-hw-gray-lighter px-4 py-3"
+                    >
+                      <div>
+                        <p class="text-c1 font-semibold text-hw-orange-main">
+                          물류 Twin
+                        </p>
+                        <h2 class="text-h6 font-bold text-hw-text-primary">
+                          도로 간섭물 이동 요청
+                        </h2>
+                      </div>
+                    </div>
+
+                    <div
+                      class="main-scroll-style min-h-0 flex-1 overflow-y-auto p-4"
+                    >
+                      <LogisticsTwinScenarioCard
+                        :current-step="currentStep"
+                        :obstructions="visibleObstructions"
+                        :selected-obstruction="selectedObstruction"
+                        :target-obstruction="targetObstruction"
+                        :dispatch-confirmed="dispatchConfirmed"
+                        :pending-location="pendingLocation"
+                        :records="records"
+                        @pick-location="pickRegisterLocation"
+                        @register-obstruction="registerObstruction"
+                        @skip-register="skipRegister"
+                        @select-obstruction="selectObstruction"
+                        @request-move="requestMove"
+                        @confirm-dispatch="confirmDispatch"
+                        @update-step="currentStep = $event"
+                        @complete-record="completeRecord"
+                        @restart="restartScenario"
+                      />
                     </div>
                   </div>
-
-                  <div
-                    class="main-scroll-style min-h-0 flex-1 overflow-y-auto p-4"
-                  >
-                    <LogisticsTwinScenarioCard
-                      :current-step="currentStep"
-                      :obstructions="visibleObstructions"
-                      :selected-obstruction="selectedObstruction"
-                      :target-obstruction="targetObstruction"
-                      :dispatch-confirmed="dispatchConfirmed"
-                      :pending-location="pendingLocation"
-                      :records="records"
-                      @pick-location="pickRegisterLocation"
-                      @register-obstruction="registerObstruction"
-                      @skip-register="skipRegister"
-                      @select-obstruction="selectObstruction"
-                      @request-move="requestMove"
-                      @confirm-dispatch="confirmDispatch"
-                      @update-step="currentStep = $event"
-                      @complete-record="completeRecord"
-                      @restart="restartScenario"
-                    />
-                  </div>
                 </div>
-              </div>
+              </Transition>
             </div>
           </div>
         </div>
