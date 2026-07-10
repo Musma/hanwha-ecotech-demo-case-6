@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import DashboardYardMap from '@/features/logged/dashboard/components/dashboard-yard-map.vue'
 import LogisticsTwinScenarioCard from '@/features/logged/dashboard/components/logistics-twin-scenario-card.vue'
+import TabletUnlockSlider from '@/features/logged/dashboard/components/tablet-unlock-slider.vue'
 import { useDashboardMapState } from '@/features/logged/dashboard/composables/use-dashboard-map-state'
 import { useLogisticsTwinScenario } from '@/features/logged/dashboard/composables/use-logistics-twin-scenario'
+import { useTabletClock } from '@/features/logged/dashboard/composables/use-tablet-clock'
 import { DASHBOARD_DEFAULT_MAP_STYLE } from '@/features/logged/dashboard/constants/dashboard-map-overlay'
 import LoggedPageShell from '@/shared/components/logged-page-shell.vue'
 
 const { jibunPolygons } = useDashboardMapState()
+const { currentDate, currentTime } = useTabletClock()
 const tabletBackgroundImage = `url(${import.meta.env.BASE_URL}login.webp)`
 const {
   completeRecord,
@@ -55,7 +58,7 @@ const {
               </span>
               <span>
                 <i class="ti ti-wifi mr-1" aria-hidden="true" />
-                09:32
+                {{ currentTime }}
               </span>
             </div>
 
@@ -105,9 +108,11 @@ const {
                   class="absolute inset-0 bg-hw-gray-darker/55"
                   aria-hidden="true"
                 />
-                <p class="relative z-10 text-h1 font-light">09:32</p>
+                <p class="relative z-10 text-h1 font-light">
+                  {{ currentTime }}
+                </p>
                 <p class="relative z-10 mt-1 text-c1 text-hw-gray-light">
-                  2026. 05. 22. (목)
+                  {{ currentDate }}
                 </p>
                 <div
                   class="relative z-10 mt-6 w-full max-w-xl rounded-xl border border-hw-red-lighter bg-hw-white-main p-5 text-left text-hw-text-primary shadow-lg lg:mt-24"
@@ -133,14 +138,10 @@ const {
                   <span class="text-hw-gray-light">목표</span>
                   <b>간섭물 조속 제거로 물류 설비 운영 정상화</b>
                 </div>
-                <button
-                  type="button"
-                  class="relative z-10 mt-4 shrink-0 rounded-full bg-hw-orange-main px-8 py-3 text-s2 font-bold text-hw-white-main shadow-lg transition-colors hover:bg-hw-orange-dark lg:mt-auto"
-                  @click="unlockTablet"
-                >
-                  <i class="ti ti-lock mr-1" aria-hidden="true" />
-                  밀어서 해제
-                </button>
+                <TabletUnlockSlider
+                  class="relative z-10 mt-4 shrink-0 lg:mt-auto"
+                  @unlock="unlockTablet"
+                />
               </div>
 
               <div
