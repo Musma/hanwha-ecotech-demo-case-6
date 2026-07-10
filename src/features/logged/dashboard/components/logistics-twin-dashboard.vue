@@ -124,8 +124,7 @@ const {
                     도로 간섭물이 발견되었습니다
                   </h2>
                   <p class="mt-2 text-b3 text-hw-gray-dark">
-                    현장 작업 중 통행로에 적치된 간섭물을 확인했습니다. 잠금을
-                    해제하면 조치 화면으로 이동합니다.
+                    현장 작업 중 통행로에 적치된 간섭물을 확인했습니다.
                   </p>
                 </div>
                 <TabletUnlockSlider
