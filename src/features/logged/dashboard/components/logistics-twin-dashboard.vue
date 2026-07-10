@@ -71,6 +71,7 @@ const {
                 :polygons="jibunPolygons"
                 :map-markers="mapMarkers"
                 :track-coordinates="trackCoordinates"
+                :track-animated="dispatchConfirmed"
               >
                 <div
                   class="pointer-events-none absolute right-4 top-4 z-10 rounded-md border border-hw-gray-lighter bg-hw-white-main/90 p-3 text-c1 font-semibold text-hw-text-primary shadow-sm"

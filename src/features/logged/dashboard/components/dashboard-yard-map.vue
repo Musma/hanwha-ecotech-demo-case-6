@@ -55,6 +55,8 @@ interface Props {
   livePosition?: LivePosition | null
   /** 작업 종료 후 보정된 트랙 좌표([lng, lat]). 비어 있으면 궤적선을 표시하지 않는다. */
   trackCoordinates?: Array<[number, number]>
+  /** true이면 이동 경로 위에 방향성 애니메이션을 표시한다. */
+  trackAnimated?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -63,6 +65,7 @@ const props = withDefaults(defineProps<Props>(), {
   polygons: () => [],
   livePosition: null,
   trackCoordinates: () => [],
+  trackAnimated: false,
 })
 
 const MAP_VIEW_COORDINATES: [
@@ -355,6 +358,7 @@ function ensureWorkTrackLayer() {
       layout: {
         'line-cap': 'round',
         'line-join': 'round',
+        visibility: 'none',
       },
       paint: {
         'line-width': 7,
@@ -369,6 +373,22 @@ function ensureWorkTrackLayer() {
 function stopCurrentWorkTrackAnimation() {
   stopWorkTrackAnimation?.()
   stopWorkTrackAnimation = null
+}
+
+function updateWorkTrackAnimation() {
+  const map = mapRef.value
+  if (!map || !mapLoaded.value || !map.getLayer(WORK_TRACK_FLOW_LAYER_ID))
+    return
+
+  stopCurrentWorkTrackAnimation()
+  const shouldAnimate =
+    props.trackAnimated && props.trackCoordinates.length >= 2
+  map.setLayoutProperty(
+    WORK_TRACK_FLOW_LAYER_ID,
+    'visibility',
+    shouldAnimate ? 'visible' : 'none',
+  )
+  if (shouldAnimate) stopWorkTrackAnimation = startWorkTrackAnimation(map)
 }
 
 function updateWorkTrack() {
@@ -396,11 +416,10 @@ function updateWorkTrack() {
     data,
   )
 
-  stopCurrentWorkTrackAnimation()
+  updateWorkTrackAnimation()
 
   // 트랙이 새로 그려지면 전체가 보이도록 지도를 맞춘다.
   if (coordinates.length >= 2) {
-    stopWorkTrackAnimation = startWorkTrackAnimation(map)
     const lngs = coordinates.map(([lng]) => lng)
     const lats = coordinates.map(([, lat]) => lat)
     map.fitBounds(
@@ -652,6 +671,11 @@ watch(
   () => props.trackCoordinates,
   () => updateWorkTrack(),
   { deep: true },
+)
+
+watch(
+  () => props.trackAnimated,
+  () => updateWorkTrackAnimation(),
 )
 
 onMounted(() => {
