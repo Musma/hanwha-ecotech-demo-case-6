@@ -7,6 +7,7 @@ import { DASHBOARD_DEFAULT_MAP_STYLE } from '@/features/logged/dashboard/constan
 import LoggedPageShell from '@/shared/components/logged-page-shell.vue'
 
 const { jibunPolygons } = useDashboardMapState()
+const tabletBackgroundImage = `url(${import.meta.env.BASE_URL}login.webp)`
 const {
   completeRecord,
   confirmDispatch,
@@ -97,14 +98,19 @@ const {
 
               <div
                 v-if="currentStep === 1"
-                class="absolute inset-0 z-20 flex flex-col items-center justify-start overflow-y-auto bg-hw-gray-darker/90 p-6 text-center text-hw-white-main lg:justify-center"
+                class="absolute inset-0 z-20 flex flex-col items-center justify-start overflow-y-auto bg-cover bg-center p-6 text-center text-hw-white-main lg:justify-center"
+                :style="{ backgroundImage: tabletBackgroundImage }"
               >
-                <p class="text-h1 font-light">09:32</p>
-                <p class="mt-1 text-c1 text-hw-gray-light">
+                <div
+                  class="absolute inset-0 bg-hw-gray-darker/55"
+                  aria-hidden="true"
+                />
+                <p class="relative z-10 text-h1 font-light">09:32</p>
+                <p class="relative z-10 mt-1 text-c1 text-hw-gray-light">
                   2026. 05. 22. (목)
                 </p>
                 <div
-                  class="mt-6 w-full max-w-xl rounded-xl border border-hw-red-lighter bg-hw-white-main p-5 text-left text-hw-text-primary shadow-lg lg:mt-24"
+                  class="relative z-10 mt-6 w-full max-w-xl rounded-xl border border-hw-red-lighter bg-hw-white-main p-5 text-left text-hw-text-primary shadow-lg lg:mt-24"
                 >
                   <p class="text-c1 text-hw-gray-main">
                     에코텍 물류 · 현장 알림
@@ -118,7 +124,7 @@ const {
                   </p>
                 </div>
                 <div
-                  class="mt-4 grid w-full max-w-xl grid-cols-[88px_minmax(0,1fr)] gap-y-2 rounded-lg border border-hw-gray-dark bg-hw-gray-darker/80 p-4 text-left text-b3"
+                  class="relative z-10 mt-4 grid w-full max-w-xl grid-cols-[88px_minmax(0,1fr)] gap-y-2 rounded-lg border border-hw-gray-dark bg-hw-gray-darker/80 p-4 text-left text-b3"
                 >
                   <span class="text-hw-gray-light">사용자</span>
                   <b>HSE 담당자</b>
@@ -129,7 +135,7 @@ const {
                 </div>
                 <button
                   type="button"
-                  class="mt-4 shrink-0 rounded-full bg-hw-orange-main px-8 py-3 text-s2 font-bold text-hw-white-main shadow-lg transition-colors hover:bg-hw-orange-dark lg:mt-auto"
+                  class="relative z-10 mt-4 shrink-0 rounded-full bg-hw-orange-main px-8 py-3 text-s2 font-bold text-hw-white-main shadow-lg transition-colors hover:bg-hw-orange-dark lg:mt-auto"
                   @click="unlockTablet"
                 >
                   <i class="ti ti-lock mr-1" aria-hidden="true" />
