@@ -439,6 +439,31 @@ function updateWorkTrack() {
   }
 }
 
+function updateWorkTrackStart(
+  position: [number, number],
+  destination: [number, number],
+) {
+  const map = mapRef.value
+  if (!map || !mapLoaded.value) return
+
+  const source = map.getSource(WORK_TRACK_SOURCE_ID) as
+    | GeoJSONSource
+    | undefined
+  source?.setData({
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        geometry: {
+          type: 'LineString',
+          coordinates: [position, destination],
+        },
+        properties: {},
+      },
+    ],
+  })
+}
+
 function clearMarkers() {
   stopMarkerAnimations.forEach((stopAnimation) => stopAnimation())
   stopMarkerAnimations = []
@@ -524,12 +549,14 @@ function updateMarkers() {
       const mapMarker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat([marker.phys[0], marker.phys[1]])
         .addTo(map)
-      if (marker.motion) {
+      const motion = marker.motion
+      if (motion) {
         stopMarkerAnimations.push(
           startVehicleRouteAnimation(
             mapMarker,
             [marker.phys[0], marker.phys[1]],
-            marker.motion,
+            motion,
+            (position) => updateWorkTrackStart(position, motion.destination),
           ),
         )
       }

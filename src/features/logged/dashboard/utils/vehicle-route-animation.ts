@@ -3,6 +3,7 @@ import type { MapEntityMarkerMotion } from '@/shared/types/map/yard-map'
 import type { Marker } from 'maplibre-gl'
 
 type Coordinate = [number, number]
+type PositionUpdateHandler = (position: Coordinate) => void
 
 function easeInOutCubic(progress: number) {
   return progress < 0.5
@@ -26,9 +27,11 @@ export function startVehicleRouteAnimation(
   marker: Marker,
   start: Coordinate,
   motion: MapEntityMarkerMotion,
+  onPositionUpdate?: PositionUpdateHandler,
 ) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     marker.setLngLat(motion.destination)
+    onPositionUpdate?.(motion.destination)
     return () => undefined
   }
 
@@ -37,19 +40,29 @@ export function startVehicleRouteAnimation(
   const motionEnd = dwellEnd + motion.departureDurationMs
   let animationFrame: number | null = null
   let startedAt: number | null = null
+  let lastPosition: Coordinate | null = null
+
+  const updatePosition = (position: Coordinate) => {
+    marker.setLngLat(position)
+    if (lastPosition?.[0] === position[0] && lastPosition?.[1] === position[1])
+      return
+
+    lastPosition = position
+    onPositionUpdate?.(position)
+  }
 
   const animate = (timestamp: number) => {
     startedAt ??= timestamp
     const elapsed = timestamp - startedAt
 
     if (elapsed < approachEnd) {
-      marker.setLngLat(
+      updatePosition(
         interpolateCoordinate(start, motion.stop, elapsed / approachEnd),
       )
     } else if (elapsed < dwellEnd) {
-      marker.setLngLat(motion.stop)
+      updatePosition(motion.stop)
     } else if (elapsed < motionEnd) {
-      marker.setLngLat(
+      updatePosition(
         interpolateCoordinate(
           motion.stop,
           motion.destination,
@@ -57,7 +70,7 @@ export function startVehicleRouteAnimation(
         ),
       )
     } else {
-      marker.setLngLat(motion.destination)
+      updatePosition(motion.destination)
       animationFrame = null
       return
     }
