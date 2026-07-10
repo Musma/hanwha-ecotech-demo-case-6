@@ -7,7 +7,7 @@ import { LOGIN_BRAND_NAME } from '@/features/public/constants/login'
 <template>
   <div class="flex h-screen w-full overflow-hidden bg-hw-white-main">
     <div
-      class="flex w-[460px] max-w-full flex-shrink-0 flex-col overflow-y-auto bg-hw-white-main max-[880px]:w-full"
+      class="main-scroll-style flex w-[460px] max-w-full flex-shrink-0 flex-col overflow-y-auto bg-hw-white-main max-[880px]:w-full"
     >
       <div class="flex flex-1 flex-col gap-9 px-12 py-[56px]">
         <div class="flex items-center gap-3">

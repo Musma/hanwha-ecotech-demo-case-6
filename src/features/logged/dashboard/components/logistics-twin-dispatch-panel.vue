@@ -18,7 +18,7 @@ const emit = defineEmits<{
 
 <template>
   <div class="flex h-full min-h-0 flex-col">
-    <div class="min-h-0 flex-1 space-y-4 overflow-y-auto">
+    <div class="main-scroll-style min-h-0 flex-1 space-y-4 overflow-y-auto">
       <div>
         <p class="text-s2 font-bold text-hw-text-primary">조치</p>
         <p class="mt-2 text-b3 text-hw-gray-dark">

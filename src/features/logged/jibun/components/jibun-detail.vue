@@ -181,7 +181,7 @@ const STAT_CLASS: Record<string, string> = {
         </div>
       </div>
 
-      <div class="flex-1 min-h-0 overflow-auto px-3 py-2">
+      <div class="main-scroll-style flex-1 min-h-0 overflow-auto px-3 py-2">
         <div
           class="flex items-start justify-between mb-2 pb-2 border-b border-hw-white-dark"
         >
@@ -335,7 +335,10 @@ const STAT_CLASS: Record<string, string> = {
         >
           하위 지번이 없습니다.
         </div>
-        <div v-else class="flex flex-col gap-0.5 max-h-[112px] overflow-y-auto">
+        <div
+          v-else
+          class="main-scroll-style flex flex-col gap-0.5 max-h-[112px] overflow-y-auto"
+        >
           <div
             v-for="c in children"
             :key="c.id"
@@ -368,7 +371,10 @@ const STAT_CLASS: Record<string, string> = {
         >
           연결된 운영 전략이 없습니다.
         </div>
-        <div v-else class="flex flex-col gap-0.5 max-h-[112px] overflow-y-auto">
+        <div
+          v-else
+          class="main-scroll-style flex flex-col gap-0.5 max-h-[112px] overflow-y-auto"
+        >
           <div
             v-for="(o, i) in linkedOps"
             :key="i"

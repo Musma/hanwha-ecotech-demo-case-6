@@ -12,7 +12,7 @@ const emit = defineEmits<{
 
 <template>
   <div class="flex h-full min-h-0 flex-col">
-    <div class="min-h-0 flex-1 space-y-4 overflow-y-auto">
+    <div class="main-scroll-style min-h-0 flex-1 space-y-4 overflow-y-auto">
       <div
         class="flex gap-3 rounded-md border border-hw-green-lighter bg-hw-green-lighter p-3"
       >

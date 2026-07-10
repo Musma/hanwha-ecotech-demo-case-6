@@ -100,7 +100,7 @@ const {
 
               <div
                 v-if="currentStep === 1"
-                class="absolute inset-0 z-20 flex flex-col items-center justify-start overflow-y-auto bg-cover bg-center p-6 text-center text-hw-white-main lg:justify-center"
+                class="main-scroll-style absolute inset-0 z-20 flex flex-col items-center justify-start overflow-y-auto bg-cover bg-center p-6 text-center text-hw-white-main lg:justify-center"
                 :style="{ backgroundImage: tabletBackgroundImage }"
               >
                 <div
@@ -152,7 +152,9 @@ const {
                     </div>
                   </div>
 
-                  <div class="min-h-0 flex-1 overflow-y-auto p-4">
+                  <div
+                    class="main-scroll-style min-h-0 flex-1 overflow-y-auto p-4"
+                  >
                     <LogisticsTwinScenarioCard
                       :current-step="currentStep"
                       :obstructions="visibleObstructions"

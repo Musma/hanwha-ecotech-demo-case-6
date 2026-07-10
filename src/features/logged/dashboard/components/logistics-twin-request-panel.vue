@@ -18,7 +18,7 @@ const emit = defineEmits<{
 
 <template>
   <div class="flex h-full min-h-0 flex-col">
-    <div class="min-h-0 flex-1 overflow-y-auto">
+    <div class="main-scroll-style min-h-0 flex-1 overflow-y-auto">
       <button
         v-for="item in obstructions"
         :key="item.id"

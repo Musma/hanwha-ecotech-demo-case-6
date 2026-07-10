@@ -135,7 +135,9 @@ const sizeClasses = computed(() =>
         data-slot="select-content"
         class="z-50 max-h-72 w-[var(--reka-combobox-trigger-width)] overflow-hidden rounded-[4px] border border-solid border-hw-gray-light bg-hw-white-main shadow-sm"
       >
-        <ComboboxViewport class="max-h-72 overflow-y-auto p-2">
+        <ComboboxViewport
+          class="main-scroll-style max-h-72 overflow-y-auto p-2"
+        >
           <ComboboxEmpty
             v-if="searchable"
             class="py-2 text-center text-b3 text-hw-gray-main"

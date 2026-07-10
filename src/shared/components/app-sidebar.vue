@@ -48,7 +48,7 @@ defineEmits<{ toggle: [] }>()
       </button>
     </div>
 
-    <nav class="flex flex-col gap-0.5 p-3 overflow-y-auto">
+    <nav class="main-scroll-style flex flex-col gap-0.5 p-3 overflow-y-auto">
       <template v-for="item in APP_NAV_ITEMS" :key="item.label">
         <RouterLink
           v-if="item.to && !item.disabled"

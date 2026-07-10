@@ -105,7 +105,7 @@ const flatNodes = computed<FlatNode[]>(() => {
       </div>
     </div>
 
-    <div class="py-1.5 overflow-auto flex-1">
+    <div class="main-scroll-style py-1.5 overflow-auto flex-1">
       <div
         v-if="roots.length === 0"
         class="px-5 py-[30px] text-center text-hw-gray-main font-light text-[13px] leading-[1.5]"

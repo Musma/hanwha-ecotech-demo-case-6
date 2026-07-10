@@ -27,7 +27,9 @@ function toggleSidebar() {
 
     <div class="flex flex-col flex-1 min-w-0">
       <AppTopbar />
-      <main class="flex-1 min-h-0 overflow-auto bg-hw-white-lighter">
+      <main
+        class="main-scroll-style flex-1 min-h-0 overflow-auto bg-hw-white-lighter"
+      >
         <slot />
       </main>
 

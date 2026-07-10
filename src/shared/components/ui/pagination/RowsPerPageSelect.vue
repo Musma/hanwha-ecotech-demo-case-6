@@ -49,7 +49,7 @@ const model = defineModel<number>({ required: true })
         data-slot="rows-per-page-select-content"
         class="z-50 max-h-72 w-[var(--reka-select-trigger-width)] overflow-hidden rounded-[4px] border border-solid border-hw-gray-light bg-hw-white-main shadow-sm"
       >
-        <SelectViewport class="max-h-72 overflow-y-auto p-2">
+        <SelectViewport class="main-scroll-style max-h-72 overflow-y-auto p-2">
           <SelectItem
             v-for="option in options"
             :key="option"
