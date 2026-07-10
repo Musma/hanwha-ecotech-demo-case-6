@@ -60,6 +60,25 @@ export function useLogisticsTwinScenario() {
 
     if (currentStep.value !== 5) return obstructionMarkers
 
+    const target = targetObstruction.value
+    const waitingVehicleMarker: MapEntityMarkerItem[] =
+      !dispatchConfirmed.value && target
+        ? [
+            {
+              id: 'waiting-vehicle',
+              label: '배차 대기',
+              name: '대기 차량',
+              phys: [
+                target.lngLat[0] +
+                  (LOGISTICS_TWIN_DROP_ZONE.lngLat[0] - target.lngLat[0]) * 0.3,
+                target.lngLat[1] +
+                  (LOGISTICS_TWIN_DROP_ZONE.lngLat[1] - target.lngLat[1]) * 0.3,
+              ],
+              tone: 'vehicle',
+            },
+          ]
+        : []
+
     return [
       ...obstructionMarkers,
       {
@@ -69,6 +88,7 @@ export function useLogisticsTwinScenario() {
         phys: LOGISTICS_TWIN_DROP_ZONE.lngLat,
         tone: 'drop-zone',
       },
+      ...waitingVehicleMarker,
     ]
   })
 
@@ -78,7 +98,12 @@ export function useLogisticsTwinScenario() {
   })
 
   const livePosition = computed(() => {
-    if (currentStep.value !== 5 || !targetObstruction.value) return null
+    if (
+      currentStep.value !== 5 ||
+      !dispatchConfirmed.value ||
+      !targetObstruction.value
+    )
+      return null
     const [lng, lat] = targetObstruction.value.lngLat
     return { lng, lat, label: '조치중' }
   })

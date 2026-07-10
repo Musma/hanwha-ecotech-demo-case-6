@@ -436,7 +436,9 @@ function updateMarkers() {
           ? 'dashboard-map-marker--danger'
           : marker.tone === 'drop-zone'
             ? 'dashboard-map-marker--drop-zone'
-            : 'dashboard-map-marker--warning'
+            : marker.tone === 'vehicle'
+              ? 'dashboard-map-marker--vehicle'
+              : 'dashboard-map-marker--warning'
       el.className = `dashboard-map-marker ${markerToneClass}${marker.selected ? ' dashboard-map-marker--selected' : ''}`
       el.title = marker.name ?? marker.label ?? ''
       if (marker.selected) {
@@ -450,7 +452,15 @@ function updateMarkers() {
 
       const tag = document.createElement('span')
       tag.className = 'dashboard-map-marker__tag'
-      tag.textContent = marker.label ?? marker.name ?? ''
+      if (marker.tone === 'vehicle') {
+        const icon = document.createElement('i')
+        icon.className = 'ti ti-truck'
+        icon.setAttribute('aria-hidden', 'true')
+        tag.append(icon)
+        tag.append(marker.label ?? marker.name ?? '')
+      } else {
+        tag.textContent = marker.label ?? marker.name ?? ''
+      }
       el.append(tag)
 
       return new maplibregl.Marker({ element: el, anchor: 'bottom' })
@@ -492,8 +502,10 @@ function updateLiveMarker() {
     })
       .setLngLat([pos.lng, pos.lat])
       .addTo(map)
-    // 첫 위치 수신 시 마커가 보이도록 해당 위치로 지도를 이동한다.
-    map.easeTo({ center: [pos.lng, pos.lat], duration: 800 })
+    // 표시 중인 이동 경로의 카메라 구도를 유지하고, 단독 위치일 때만 중심을 이동한다.
+    if (props.trackCoordinates.length < 2) {
+      map.easeTo({ center: [pos.lng, pos.lat], duration: 800 })
+    }
     return
   }
 

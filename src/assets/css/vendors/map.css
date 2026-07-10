@@ -184,6 +184,15 @@
   background: var(--color-hw-green-main);
 }
 
+.dashboard-map-marker--vehicle .dashboard-map-marker__tag {
+  gap: 4px;
+  background: var(--color-hw-blue-dark);
+}
+
+.dashboard-map-marker--vehicle .dashboard-map-marker__tag > i {
+  font-size: var(--text-b2);
+}
+
 .dashboard-map-marker--selected .dashboard-map-marker__tag {
   outline: 2px solid var(--color-hw-white-main);
   outline-offset: 2px;
