@@ -128,16 +128,6 @@ const {
                     해제하면 조치 화면으로 이동합니다.
                   </p>
                 </div>
-                <div
-                  class="relative z-10 mt-4 grid w-full max-w-xl grid-cols-[88px_minmax(0,1fr)] gap-y-2 rounded-lg border border-hw-gray-dark bg-hw-gray-darker/80 p-4 text-left text-b3"
-                >
-                  <span class="text-hw-gray-light">사용자</span>
-                  <b>HSE 담당자</b>
-                  <span class="text-hw-gray-light">상황</span>
-                  <b>도로 간섭물 발견 · 이동 조치 필요</b>
-                  <span class="text-hw-gray-light">목표</span>
-                  <b>간섭물 조속 제거로 물류 설비 운영 정상화</b>
-                </div>
                 <TabletUnlockSlider
                   class="relative z-10 mt-4 shrink-0 lg:mt-auto"
                   @unlock="unlockTablet"
