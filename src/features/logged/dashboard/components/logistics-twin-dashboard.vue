@@ -36,7 +36,7 @@ const {
     <section class="flex h-full min-h-0 flex-col gap-4">
       <div class="flex min-h-0 flex-1 items-center justify-center">
         <div
-          class="relative h-[80%] w-full max-w-[1440px] rounded-3xl border-[10px] border-hw-gray-darker bg-hw-gray-darker shadow-2xl"
+          class="relative h-[85%] w-full max-w-[1440px] rounded-3xl border-[10px] border-hw-gray-darker bg-hw-gray-darker shadow-2xl"
         >
           <span
             class="absolute left-1/2 top-2 z-10 h-1.5 w-24 -translate-x-1/2 rounded-full bg-hw-gray-main"
