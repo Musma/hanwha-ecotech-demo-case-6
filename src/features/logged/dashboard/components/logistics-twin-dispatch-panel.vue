@@ -51,7 +51,7 @@ const emit = defineEmits<{
         </div>
       </dl>
 
-      <div>
+      <div v-if="!dispatchConfirmed">
         <p class="mb-2 text-c1 font-bold text-hw-gray-darker">
           추천 배차 자원 {{ LOGISTICS_TWIN_DISPATCH_RESOURCES.length }}대
         </p>
