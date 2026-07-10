@@ -3,12 +3,14 @@ import maplibregl, {
   type GeoJSONSource,
   type LngLatBoundsLike,
   type Map as MapLibreMap,
+  type MapMouseEvent,
   type Marker,
 } from 'maplibre-gl'
 import { computed, onMounted, onUnmounted, shallowRef, watch } from 'vue'
 
 import 'maplibre-gl/dist/maplibre-gl.css'
 
+import type { LogisticsTwinPendingLocation } from '@/features/logged/dashboard/constants/logistics-twin-data'
 import { startVehicleRouteAnimation } from '@/features/logged/dashboard/utils/vehicle-route-animation'
 import {
   WORK_TRACK_BASE_DASH_ARRAY,
@@ -29,6 +31,7 @@ import {
 import { buildGridGeoJson } from '@/shared/helpers/map/grid-utils'
 import { collapseMapAttribution } from '@/shared/helpers/map/map-control-utils'
 import { normalizeGridBoundaryCoordinates } from '@/shared/helpers/map/map-geo-helpers'
+import { getPhysicalGridAddress } from '@/shared/helpers/map/physical-address'
 import type {
   MapEntityMarkerItem,
   YardMapProps,
@@ -59,6 +62,8 @@ interface Props {
   trackCoordinates?: Array<[number, number]>
   /** true이면 이동 경로 위에 방향성 애니메이션을 표시한다. */
   trackAnimated?: boolean
+  /** true이면 지도 클릭 좌표를 물리지번으로 변환해 전달한다. */
+  pickMode?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -68,7 +73,12 @@ const props = withDefaults(defineProps<Props>(), {
   livePosition: null,
   trackCoordinates: () => [],
   trackAnimated: false,
+  pickMode: false,
 })
+
+const emit = defineEmits<{
+  pickLocation: [location: LogisticsTwinPendingLocation]
+}>()
 
 const MAP_VIEW_COORDINATES: [
   [number, number],
@@ -116,6 +126,32 @@ const YARD_GRID_BOUNDARY = normalizeGridBoundaryCoordinates(
   YARD_GRID_ORIGIN,
   YARD_GRID_BOUNDARY_ROTATION_DEG,
 )
+
+function updatePickModeCursor() {
+  const map = mapRef.value
+  if (!map) return
+  map.getCanvas().style.cursor = props.pickMode ? 'crosshair' : ''
+}
+
+function handleLocationPick(event: MapMouseEvent) {
+  if (!props.pickMode) return
+
+  const label = getPhysicalGridAddress(
+    event.lngLat,
+    YARD_GRID_ORIGIN,
+    DEFAULT_GRID_SIZE_METERS,
+    DEFAULT_GRID_SIZE_METERS,
+    YARD_GRID_BOUNDARY,
+  )
+  const matched = /^\((\d+),\s*(\d+)\)$/.exec(label)
+  if (!matched) return
+
+  emit('pickLocation', {
+    label,
+    phys: [Number(matched[1]), Number(matched[2])],
+    lngLat: [event.lngLat.lng, event.lngLat.lat],
+  })
+}
 
 const YARD_CAD_IMAGE_OVERLAYS = [
   {
@@ -633,6 +669,7 @@ function initializeMap() {
 
   collapseMapAttribution(map)
   mapRef.value = map
+  map.on('click', handleLocationPick)
   // 핀치 줌(확대/축소)은 허용하되, 야드 정렬 유지를 위해 두 손가락 회전은 비활성화한다.
   map.touchZoomRotate.disableRotation()
   map.once('load', () => {
@@ -649,6 +686,7 @@ function initializeMap() {
     updateMarkers()
     updateLiveMarker()
     updateWorkTrack()
+    updatePickModeCursor()
     requestAnimationFrame(() => map.resize())
   })
 }
@@ -674,6 +712,7 @@ function syncMapStyle() {
     updateMarkers()
     updateLiveMarker()
     updateWorkTrack()
+    updatePickModeCursor()
     requestAnimationFrame(() => map.resize())
   })
 }
@@ -720,6 +759,11 @@ watch(
 watch(
   () => props.trackAnimated,
   () => updateWorkTrackAnimation(),
+)
+
+watch(
+  () => props.pickMode,
+  () => updatePickModeCursor(),
 )
 
 onMounted(() => {

@@ -5,6 +5,7 @@ import LogisticsTwinRegisterPanel from '@/features/logged/dashboard/components/l
 import LogisticsTwinRequestPanel from '@/features/logged/dashboard/components/logistics-twin-request-panel.vue'
 import type {
   LogisticsTwinObstruction,
+  LogisticsTwinPendingLocation,
   LogisticsTwinRecord,
 } from '@/features/logged/dashboard/constants/logistics-twin-data'
 
@@ -15,13 +16,12 @@ defineProps<{
   targetObstruction: LogisticsTwinObstruction | null
   dispatchConfirmed: boolean
   selectedResourceCodes: string[]
-  pendingLocation: { label: string; phys: [number, number] } | null
+  pendingLocation: LogisticsTwinPendingLocation | null
   records: LogisticsTwinRecord[]
 }>()
 
 const emit = defineEmits<{
-  pickLocation: []
-  registerObstruction: []
+  registerObstruction: [photo: string | null]
   skipRegister: []
   selectObstruction: [item: LogisticsTwinObstruction]
   requestMove: [item: LogisticsTwinObstruction]
@@ -37,8 +37,7 @@ const emit = defineEmits<{
   <LogisticsTwinRegisterPanel
     v-if="currentStep === 3"
     :pending-location="pendingLocation"
-    @pick-location="emit('pickLocation')"
-    @register-obstruction="emit('registerObstruction')"
+    @register-obstruction="emit('registerObstruction', $event)"
     @skip-register="emit('skipRegister')"
   />
 

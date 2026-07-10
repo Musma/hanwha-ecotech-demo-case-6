@@ -4,6 +4,7 @@ import {
   LOGISTICS_TWIN_DROP_ZONE,
   LOGISTICS_TWIN_OBSTRUCTIONS,
   type LogisticsTwinObstruction,
+  type LogisticsTwinPendingLocation,
   type LogisticsTwinRecord,
   getLogisticsTwinTone,
 } from '@/features/logged/dashboard/constants/logistics-twin-data'
@@ -18,11 +19,7 @@ export function useLogisticsTwinScenario() {
   const targetId = shallowRef('')
   const selectedDispatchResourceCodes = shallowRef<string[]>([])
   const dispatchConfirmed = shallowRef(false)
-  const pendingLocation = shallowRef<{
-    label: string
-    phys: [number, number]
-    lngLat: [number, number]
-  } | null>(null)
+  const pendingLocation = shallowRef<LogisticsTwinPendingLocation | null>(null)
   const records = shallowRef<LogisticsTwinRecord[]>([])
   const toastMessage = shallowRef('')
 
@@ -66,6 +63,20 @@ export function useLogisticsTwinScenario() {
             ? 'obstruction-danger'
             : 'obstruction-warn',
       }))
+
+    if (currentStep.value === 3 && pendingLocation.value) {
+      return [
+        ...obstructionMarkers,
+        {
+          id: 'pending-obstruction-location',
+          label: '신규',
+          name: `등재 위치 ${pendingLocation.value.label}`,
+          phys: pendingLocation.value.lngLat,
+          selected: true,
+          tone: 'obstruction-warn',
+        },
+      ]
+    }
 
     if (currentStep.value !== 5) return obstructionMarkers
 
@@ -139,16 +150,12 @@ export function useLogisticsTwinScenario() {
     showToast('태블릿 잠금이 해제되었습니다')
   }
 
-  function pickRegisterLocation() {
-    pendingLocation.value = {
-      label: '084, 011',
-      phys: [84, 11],
-      lngLat: [127.599214, 34.902932],
-    }
+  function pickRegisterLocation(location: LogisticsTwinPendingLocation) {
+    pendingLocation.value = location
     showToast('가시화 화면에서 간섭물 위치가 선택되었습니다')
   }
 
-  function registerObstruction() {
+  function registerObstruction(photo: string | null) {
     const pending = pendingLocation.value
     if (!pending) return
 
@@ -165,6 +172,7 @@ export function useLogisticsTwinScenario() {
       reporter: 'HSE 담당자',
       status: '확인',
       detail: '현장에서 등재된 도로 간섭물입니다.',
+      photo: photo || undefined,
     }
 
     obstructions.value = [

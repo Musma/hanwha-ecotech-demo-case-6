@@ -72,6 +72,8 @@ const {
                 :map-markers="mapMarkers"
                 :track-coordinates="trackCoordinates"
                 :track-animated="dispatchConfirmed"
+                :pick-mode="currentStep === 3"
+                @pick-location="pickRegisterLocation"
               >
                 <div
                   class="pointer-events-none absolute right-4 top-4 z-10 rounded-md border border-hw-gray-lighter bg-hw-white-main/90 p-3 text-c1 font-semibold text-hw-text-primary shadow-sm"
@@ -176,7 +178,6 @@ const {
                         :selected-resource-codes="selectedDispatchResourceCodes"
                         :pending-location="pendingLocation"
                         :records="records"
-                        @pick-location="pickRegisterLocation"
                         @register-obstruction="registerObstruction"
                         @skip-register="skipRegister"
                         @select-obstruction="selectObstruction"

@@ -26,6 +26,12 @@ export interface LogisticsTwinObstruction {
   photo?: string
 }
 
+export interface LogisticsTwinPendingLocation {
+  label: string
+  phys: [number, number]
+  lngLat: [number, number]
+}
+
 export interface LogisticsTwinDispatchResource {
   code: string
   group: string
