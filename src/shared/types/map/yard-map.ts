@@ -30,6 +30,7 @@ export interface MapEntityMarkerItem {
   label?: string
   name?: string
   phys?: number[]
+  selected?: boolean
   tone?: string
   popup?: unknown
 }

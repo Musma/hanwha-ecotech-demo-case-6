@@ -142,6 +142,97 @@
   background: #008233;
 }
 
+/* 대시보드 도로 간섭물 태그 마커 */
+.dashboard-map-marker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  pointer-events: none;
+}
+
+.dashboard-map-marker__tag {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  color: var(--color-hw-white-main);
+  font-size: var(--text-c1);
+  font-weight: 700;
+  line-height: var(--text-c1--line-height);
+  white-space: nowrap;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.45);
+}
+
+.dashboard-map-marker--warning .dashboard-map-marker__tag {
+  background: var(--color-hw-orange-main);
+}
+
+.dashboard-map-marker--danger .dashboard-map-marker__tag {
+  background: var(--color-hw-red-main);
+}
+
+.dashboard-map-marker--drop-zone .dashboard-map-marker__tag {
+  background: var(--color-hw-green-main);
+}
+
+.dashboard-map-marker--selected .dashboard-map-marker__tag {
+  outline: 2px solid var(--color-hw-white-main);
+  outline-offset: 2px;
+}
+
+.dashboard-map-marker__wave {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 2px solid
+    color-mix(in srgb, var(--color-hw-orange-main) 70%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-hw-orange-lighter) 24%,
+    transparent
+  );
+  transform: translate(-50%, -50%) scale(0.65);
+  animation: dashboard-marker-ripple 2s cubic-bezier(0, 0.55, 0.45, 1) infinite;
+}
+
+.dashboard-map-marker--danger .dashboard-map-marker__wave {
+  border-color: color-mix(in srgb, var(--color-hw-red-main) 70%, transparent);
+  background: color-mix(in srgb, var(--color-hw-red-lighter) 30%, transparent);
+}
+
+.dashboard-map-marker__wave:nth-child(2) {
+  animation-delay: 0.66s;
+}
+
+.dashboard-map-marker__wave:nth-child(3) {
+  animation-delay: 1.33s;
+}
+
+@keyframes dashboard-marker-ripple {
+  0% {
+    opacity: 0.88;
+    transform: translate(-50%, -50%) scale(0.65);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(3.3);
+  }
+}
+
 /* 실시간 현재위치(GPS) 마커 */
 .live-marker {
   position: relative;

@@ -50,6 +50,7 @@ export function useLogisticsTwinScenario() {
       label: item.label,
       name: item.name,
       phys: item.lngLat,
+      selected: currentStep.value >= 4 && item.id === selectedId.value,
       tone:
         getLogisticsTwinTone(item.days) === 'danger'
           ? 'obstruction-danger'

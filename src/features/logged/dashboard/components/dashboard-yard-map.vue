@@ -422,13 +422,26 @@ function updateMarkers() {
       const el = document.createElement('div')
       const markerToneClass =
         marker.tone === 'obstruction-danger'
-          ? 'bg-hw-red-main'
+          ? 'dashboard-map-marker--danger'
           : marker.tone === 'drop-zone'
-            ? 'bg-hw-green-main'
-            : 'bg-hw-orange-main'
-      el.className = `flex h-7 min-w-7 items-center justify-center rounded-full px-2 text-c1 font-bold text-hw-white-main shadow-sm ${markerToneClass}`
-      el.textContent = marker.label ?? marker.name ?? ''
+            ? 'dashboard-map-marker--drop-zone'
+            : 'dashboard-map-marker--warning'
+      el.className = `dashboard-map-marker ${markerToneClass}${marker.selected ? ' dashboard-map-marker--selected' : ''}`
       el.title = marker.name ?? marker.label ?? ''
+      if (marker.selected) {
+        const waves = Array.from({ length: 3 }, () => {
+          const wave = document.createElement('span')
+          wave.className = 'dashboard-map-marker__wave'
+          return wave
+        })
+        el.append(...waves)
+      }
+
+      const tag = document.createElement('span')
+      tag.className = 'dashboard-map-marker__tag'
+      tag.textContent = marker.label ?? marker.name ?? ''
+      el.append(tag)
+
       return new maplibregl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat([marker.phys[0], marker.phys[1]])
         .addTo(map)
