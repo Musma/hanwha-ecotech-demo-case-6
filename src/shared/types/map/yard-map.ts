@@ -25,6 +25,14 @@ export interface MapRouteFocusRequest extends FocusRequestBase {
   popup?: unknown
 }
 
+export interface MapEntityMarkerMotion {
+  stop: [number, number]
+  destination: [number, number]
+  approachDurationMs: number
+  dwellDurationMs: number
+  departureDurationMs: number
+}
+
 export interface MapEntityMarkerItem {
   id?: string
   label?: string
@@ -32,6 +40,7 @@ export interface MapEntityMarkerItem {
   phys?: number[]
   selected?: boolean
   tone?: string
+  motion?: MapEntityMarkerMotion
   popup?: unknown
 }
 

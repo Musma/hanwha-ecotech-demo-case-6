@@ -9,6 +9,7 @@ import { computed, onMounted, onUnmounted, shallowRef, watch } from 'vue'
 
 import 'maplibre-gl/dist/maplibre-gl.css'
 
+import { startVehicleRouteAnimation } from '@/features/logged/dashboard/utils/vehicle-route-animation'
 import {
   WORK_TRACK_BASE_DASH_ARRAY,
   WORK_TRACK_FLOW_LAYER_ID,
@@ -163,6 +164,7 @@ const labelMarkerRefs = shallowRef<Marker[]>([])
 const liveMarkerRef = shallowRef<Marker | null>(null)
 const mapLoaded = shallowRef(false)
 let stopWorkTrackAnimation: (() => void) | null = null
+let stopMarkerAnimations: Array<() => void> = []
 
 const mapBounds = computed<LngLatBoundsLike>(() => {
   const lngs = MAP_VIEW_COORDINATES.map(([lng]) => lng)
@@ -438,6 +440,8 @@ function updateWorkTrack() {
 }
 
 function clearMarkers() {
+  stopMarkerAnimations.forEach((stopAnimation) => stopAnimation())
+  stopMarkerAnimations = []
   markerRefs.value.forEach((marker) => marker.remove())
   markerRefs.value = []
 }
@@ -517,9 +521,19 @@ function updateMarkers() {
       }
       el.append(tag)
 
-      return new maplibregl.Marker({ element: el, anchor: 'bottom' })
+      const mapMarker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat([marker.phys[0], marker.phys[1]])
         .addTo(map)
+      if (marker.motion) {
+        stopMarkerAnimations.push(
+          startVehicleRouteAnimation(
+            mapMarker,
+            [marker.phys[0], marker.phys[1]],
+            marker.motion,
+          ),
+        )
+      }
+      return mapMarker
     })
     .filter((marker): marker is Marker => Boolean(marker))
 }

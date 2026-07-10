@@ -70,26 +70,35 @@ export function useLogisticsTwinScenario() {
     if (currentStep.value !== 5) return obstructionMarkers
 
     const target = targetObstruction.value
-    const vehicleMarker: MapEntityMarkerItem[] = target
+    const waitingVehiclePosition: [number, number] | null = target
       ? [
-          {
-            id: 'scenario-vehicle',
-            label: dispatchConfirmed.value ? '조치중' : '배차 대기',
-            name: dispatchConfirmed.value ? '조치중 차량' : '대기 차량',
-            phys: dispatchConfirmed.value
-              ? target.lngLat
-              : [
-                  target.lngLat[0] +
-                    (LOGISTICS_TWIN_DROP_ZONE.lngLat[0] - target.lngLat[0]) *
-                      0.3,
-                  target.lngLat[1] +
-                    (LOGISTICS_TWIN_DROP_ZONE.lngLat[1] - target.lngLat[1]) *
-                      0.3,
-                ],
-            tone: 'vehicle',
-          },
+          target.lngLat[0] +
+            (LOGISTICS_TWIN_DROP_ZONE.lngLat[0] - target.lngLat[0]) * 0.3,
+          target.lngLat[1] +
+            (LOGISTICS_TWIN_DROP_ZONE.lngLat[1] - target.lngLat[1]) * 0.3,
         ]
-      : []
+      : null
+    const vehicleMarker: MapEntityMarkerItem[] =
+      target && waitingVehiclePosition
+        ? [
+            {
+              id: 'scenario-vehicle',
+              label: dispatchConfirmed.value ? '조치중' : '배차 대기',
+              name: dispatchConfirmed.value ? '조치중 차량' : '대기 차량',
+              phys: waitingVehiclePosition,
+              tone: 'vehicle',
+              motion: dispatchConfirmed.value
+                ? {
+                    stop: target.lngLat,
+                    destination: LOGISTICS_TWIN_DROP_ZONE.lngLat,
+                    approachDurationMs: 1000,
+                    dwellDurationMs: 2000,
+                    departureDurationMs: 1800,
+                  }
+                : undefined,
+            },
+          ]
+        : []
 
     return [
       ...obstructionMarkers,
