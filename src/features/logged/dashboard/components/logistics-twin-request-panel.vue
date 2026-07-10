@@ -125,15 +125,8 @@ const emit = defineEmits<{
     </div>
 
     <div
-      class="-mx-4 -mb-4 mt-4 grid shrink-0 grid-cols-2 gap-2 border-t border-hw-gray-lighter bg-hw-white-lighter p-3"
+      class="-mx-4 -mb-4 mt-4 grid shrink-0 grid-cols-1 border-t border-hw-gray-lighter bg-hw-white-lighter p-3"
     >
-      <button
-        type="button"
-        class="rounded-md border border-hw-gray-lighter bg-hw-white-main px-3 py-3 text-s2 font-bold text-hw-gray-darker transition-colors hover:bg-hw-btn-hover"
-      >
-        <i class="ti ti-cube-3d-sphere mr-1" aria-hidden="true" />
-        디지털Twin 이동
-      </button>
       <button
         type="button"
         class="rounded-md bg-hw-orange-main px-3 py-3 text-s2 font-bold text-hw-white-main transition-colors hover:bg-hw-orange-dark"
