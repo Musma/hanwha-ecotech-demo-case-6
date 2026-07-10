@@ -8,11 +8,13 @@ import {
 defineProps<{
   targetObstruction: LogisticsTwinObstruction
   dispatchConfirmed: boolean
+  selectedResourceCodes: string[]
 }>()
 
 const emit = defineEmits<{
   confirmDispatch: []
   completeRecord: []
+  toggleResource: [code: string]
 }>()
 </script>
 
@@ -57,28 +59,51 @@ const emit = defineEmits<{
           <li
             v-for="resource in LOGISTICS_TWIN_DISPATCH_RESOURCES"
             :key="resource.code"
-            class="flex items-center gap-2 rounded-md border border-hw-gray-lighter bg-hw-white-main p-2"
           >
-            <i class="ti ti-truck text-h5 text-hw-gray-dark" />
-            <span class="min-w-0 flex-1">
-              <b class="block truncate text-s2 text-hw-text-primary">
-                {{ resource.code }}
-              </b>
-              <span class="block truncate text-c1 text-hw-gray-dark">
-                {{ resource.group }} · {{ resource.ton }} ·
-                {{ resource.driver }}
-              </span>
-            </span>
-            <span
-              class="rounded-sm px-2 py-0.5 text-c1 font-bold"
+            <button
+              type="button"
+              class="flex w-full items-center gap-2 rounded-md border p-2 text-left transition-colors"
               :class="
-                resource.status === '대기'
-                  ? 'bg-hw-green-lighter text-hw-green-darker'
-                  : 'bg-hw-blue-lighter text-hw-blue-darker'
+                selectedResourceCodes.includes(resource.code)
+                  ? 'border-hw-orange-main bg-hw-orange-lighter/20'
+                  : 'border-hw-gray-lighter bg-hw-white-main hover:bg-hw-white-lighter'
               "
+              :aria-pressed="selectedResourceCodes.includes(resource.code)"
+              :disabled="dispatchConfirmed"
+              @click="emit('toggleResource', resource.code)"
             >
-              {{ resource.status }}
-            </span>
+              <span
+                class="flex size-5 shrink-0 items-center justify-center rounded-sm border"
+                :class="
+                  selectedResourceCodes.includes(resource.code)
+                    ? 'border-hw-orange-main bg-hw-orange-main text-hw-white-main'
+                    : 'border-hw-gray-main bg-hw-white-main text-transparent'
+                "
+                aria-hidden="true"
+              >
+                <i class="ti ti-check text-c1" />
+              </span>
+              <i class="ti ti-truck text-h5 text-hw-gray-dark" />
+              <span class="min-w-0 flex-1">
+                <b class="block truncate text-s2 text-hw-text-primary">
+                  {{ resource.code }}
+                </b>
+                <span class="block truncate text-c1 text-hw-gray-dark">
+                  {{ resource.group }} · {{ resource.ton }} ·
+                  {{ resource.driver }}
+                </span>
+              </span>
+              <span
+                class="rounded-sm px-2 py-0.5 text-c1 font-bold"
+                :class="
+                  resource.status === '대기'
+                    ? 'bg-hw-green-lighter text-hw-green-darker'
+                    : 'bg-hw-blue-lighter text-hw-blue-darker'
+                "
+              >
+                {{ resource.status }}
+              </span>
+            </button>
           </li>
         </ul>
       </div>
@@ -103,11 +128,7 @@ const emit = defineEmits<{
           </div>
           <p>
             배차 장비:
-            {{
-              LOGISTICS_TWIN_DISPATCH_RESOURCES.map(
-                (resource) => resource.code,
-              ).join(', ')
-            }}
+            {{ selectedResourceCodes.join(', ') }}
           </p>
           <p class="font-bold text-hw-green-dark">
             <i class="ti ti-circle-check mr-1" aria-hidden="true" />
@@ -122,7 +143,8 @@ const emit = defineEmits<{
     >
       <button
         type="button"
-        class="w-full rounded-md bg-hw-orange-main px-4 py-3 text-s2 font-bold text-hw-white-main transition-colors hover:bg-hw-orange-dark"
+        class="w-full rounded-md bg-hw-orange-main px-4 py-3 text-s2 font-bold text-hw-white-main transition-colors hover:bg-hw-orange-dark disabled:cursor-not-allowed disabled:bg-hw-gray-light disabled:text-hw-gray-dark"
+        :disabled="!dispatchConfirmed && selectedResourceCodes.length === 0"
         @click="
           dispatchConfirmed ? emit('completeRecord') : emit('confirmDispatch')
         "

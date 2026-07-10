@@ -16,6 +16,7 @@ export function useLogisticsTwinScenario() {
   )
   const selectedId = shallowRef(LOGISTICS_TWIN_OBSTRUCTIONS[0]?.id ?? '')
   const targetId = shallowRef('')
+  const selectedDispatchResourceCodes = shallowRef<string[]>([])
   const dispatchConfirmed = shallowRef(false)
   const pendingLocation = shallowRef<{
     label: string
@@ -159,11 +160,26 @@ export function useLogisticsTwinScenario() {
     targetId.value = item.id
     updateObstructionStatus(item.id, '이동요청')
     currentStep.value = 5
+    selectedDispatchResourceCodes.value = []
     dispatchConfirmed.value = false
     showToast('지번체계 기반 간섭물 이동을 요청하였습니다')
   }
 
+  function toggleDispatchResource(code: string) {
+    if (dispatchConfirmed.value) return
+
+    selectedDispatchResourceCodes.value =
+      selectedDispatchResourceCodes.value.includes(code)
+        ? selectedDispatchResourceCodes.value.filter((item) => item !== code)
+        : [...selectedDispatchResourceCodes.value, code]
+  }
+
   function confirmDispatch() {
+    if (selectedDispatchResourceCodes.value.length === 0) {
+      showToast('배차 자원을 한 대 이상 선택해 주세요')
+      return
+    }
+
     if (targetId.value) updateObstructionStatus(targetId.value, '배차확정')
     dispatchConfirmed.value = true
     showToast('배차가 확정되어 모바일 오더를 전달하였습니다')
@@ -178,7 +194,7 @@ export function useLogisticsTwinScenario() {
           id: target.id,
           name: target.name,
           jibun: target.jibun,
-          equip: 'TR-07, FL-12',
+          equip: selectedDispatchResourceCodes.value.join(', '),
           at: '2026.05.22 09:35',
         },
         ...records.value,
@@ -196,6 +212,7 @@ export function useLogisticsTwinScenario() {
     }))
     selectedId.value = LOGISTICS_TWIN_OBSTRUCTIONS[0]?.id ?? ''
     targetId.value = ''
+    selectedDispatchResourceCodes.value = []
     dispatchConfirmed.value = false
     pendingLocation.value = null
     records.value = []
@@ -216,10 +233,12 @@ export function useLogisticsTwinScenario() {
     requestMove,
     restartScenario,
     selectObstruction,
+    selectedDispatchResourceCodes,
     selectedObstruction,
     skipRegister,
     targetObstruction,
     toastMessage,
+    toggleDispatchResource,
     trackCoordinates,
     unlockTablet,
     visibleObstructions,
