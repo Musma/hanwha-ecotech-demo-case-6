@@ -16,7 +16,6 @@ const {
   confirmDispatch,
   currentStep,
   dispatchConfirmed,
-  livePosition,
   mapMarkers,
   pendingLocation,
   pickRegisterLocation,
@@ -71,7 +70,6 @@ const {
                 :map-style="DASHBOARD_DEFAULT_MAP_STYLE"
                 :polygons="jibunPolygons"
                 :map-markers="mapMarkers"
-                :live-position="livePosition"
                 :track-coordinates="trackCoordinates"
               >
                 <div

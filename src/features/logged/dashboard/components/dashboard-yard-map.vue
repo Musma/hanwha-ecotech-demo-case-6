@@ -9,6 +9,12 @@ import { computed, onMounted, onUnmounted, shallowRef, watch } from 'vue'
 
 import 'maplibre-gl/dist/maplibre-gl.css'
 
+import {
+  WORK_TRACK_BASE_DASH_ARRAY,
+  WORK_TRACK_FLOW_LAYER_ID,
+  WORK_TRACK_INITIAL_FLOW_DASH_ARRAY,
+  startWorkTrackAnimation,
+} from '@/features/logged/dashboard/utils/work-track-animation'
 import { getMapLibreStyle } from '@/shared/constants/map'
 import { DEFAULT_GRID_SIZE_METERS } from '@/shared/constants/map-common'
 import {
@@ -152,6 +158,7 @@ const markerRefs = shallowRef<Marker[]>([])
 const labelMarkerRefs = shallowRef<Marker[]>([])
 const liveMarkerRef = shallowRef<Marker | null>(null)
 const mapLoaded = shallowRef(false)
+let stopWorkTrackAnimation: (() => void) | null = null
 
 const mapBounds = computed<LngLatBoundsLike>(() => {
   const lngs = MAP_VIEW_COORDINATES.map(([lng]) => lng)
@@ -333,11 +340,35 @@ function ensureWorkTrackLayer() {
       },
       paint: {
         'line-color': '#F97316',
-        'line-width': 4,
-        'line-opacity': 0.9,
+        'line-width': 3,
+        'line-opacity': 0.55,
+        'line-dasharray': WORK_TRACK_BASE_DASH_ARRAY,
       },
     })
   }
+  if (!map.getLayer(WORK_TRACK_FLOW_LAYER_ID)) {
+    map.addLayer({
+      id: WORK_TRACK_FLOW_LAYER_ID,
+      type: 'line',
+      source: WORK_TRACK_SOURCE_ID,
+      layout: {
+        'line-cap': 'round',
+        'line-join': 'round',
+      },
+      paint: {
+        'line-color': '#FBB584',
+        'line-width': 5,
+        'line-opacity': 0.95,
+        'line-blur': 0.6,
+        'line-dasharray': WORK_TRACK_INITIAL_FLOW_DASH_ARRAY,
+      },
+    })
+  }
+}
+
+function stopCurrentWorkTrackAnimation() {
+  stopWorkTrackAnimation?.()
+  stopWorkTrackAnimation = null
 }
 
 function updateWorkTrack() {
@@ -365,8 +396,11 @@ function updateWorkTrack() {
     data,
   )
 
+  stopCurrentWorkTrackAnimation()
+
   // 트랙이 새로 그려지면 전체가 보이도록 지도를 맞춘다.
   if (coordinates.length >= 2) {
+    stopWorkTrackAnimation = startWorkTrackAnimation(map)
     const lngs = coordinates.map(([lng]) => lng)
     const lats = coordinates.map(([, lat]) => lat)
     map.fitBounds(
@@ -560,6 +594,7 @@ function syncMapStyle() {
   const map = mapRef.value
   if (!map || !mapLoaded.value) return
 
+  stopCurrentWorkTrackAnimation()
   mapLoaded.value = false
   map.setStyle(getMapLibreStyle(props.mapStyle))
   map.once('style.load', () => {
@@ -624,6 +659,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  stopCurrentWorkTrackAnimation()
   clearMarkers()
   clearLabelMarkers()
   liveMarkerRef.value?.remove()
