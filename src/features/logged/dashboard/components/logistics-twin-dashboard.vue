@@ -26,7 +26,8 @@ const {
   selectObstruction,
   selectedDispatchResourceCodes,
   selectedObstruction,
-  skipRegister,
+  showObstructionList,
+  startRegister,
   targetObstruction,
   toastMessage,
   trackCoordinates,
@@ -159,12 +160,38 @@ const {
                     >
                       <div>
                         <p class="text-c1 font-semibold text-hw-orange-main">
-                          물류 Twin
+                          간섭물 관리
                         </p>
                         <h2 class="text-h6 font-bold text-hw-text-primary">
-                          안전 통로 간섭물 이동 요청
+                          {{
+                            currentStep === 3
+                              ? '새 간섭물 등록'
+                              : currentStep === 4
+                                ? '간섭물 이동 요청'
+                                : currentStep === 5
+                                  ? '이동 자원 배차'
+                                  : '이동 처리 결과'
+                          }}
                         </h2>
                       </div>
+                      <button
+                        v-if="currentStep === 3"
+                        type="button"
+                        class="rounded-md border border-hw-gray-lighter bg-hw-white-main px-3 py-2 text-c1 font-bold text-hw-gray-darker transition-colors hover:bg-hw-btn-hover"
+                        @click="showObstructionList"
+                      >
+                        <i class="ti ti-arrow-left mr-1" aria-hidden="true" />
+                        목록으로
+                      </button>
+                      <button
+                        v-else-if="currentStep === 4"
+                        type="button"
+                        class="rounded-md bg-hw-orange-main px-3 py-2 text-c1 font-bold text-hw-white-main transition-colors hover:bg-hw-orange-dark"
+                        @click="startRegister"
+                      >
+                        <i class="ti ti-plus mr-1" aria-hidden="true" />
+                        신규 등록
+                      </button>
                     </div>
 
                     <div
@@ -180,7 +207,6 @@ const {
                         :pending-location="pendingLocation"
                         :records="records"
                         @register-obstruction="registerObstruction"
-                        @skip-register="skipRegister"
                         @select-obstruction="selectObstruction"
                         @request-move="requestMove"
                         @confirm-dispatch="confirmDispatch"

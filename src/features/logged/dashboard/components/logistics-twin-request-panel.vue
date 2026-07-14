@@ -19,6 +19,18 @@ const emit = defineEmits<{
 <template>
   <div class="flex h-full min-h-0 flex-col">
     <div class="main-scroll-style min-h-0 flex-1 overflow-y-auto">
+      <div
+        class="flex items-center justify-between border-b border-hw-gray-lighter bg-hw-white-lighter px-3 py-2"
+      >
+        <span class="text-c1 font-semibold text-hw-gray-dark">
+          조치할 간섭물을 선택하세요
+        </span>
+        <span
+          class="rounded-full bg-hw-white-dark px-2 py-0.5 text-c1 font-bold text-hw-gray-darker"
+        >
+          전체 {{ obstructions.length }}건
+        </span>
+      </div>
       <button
         v-for="item in obstructions"
         :key="item.id"

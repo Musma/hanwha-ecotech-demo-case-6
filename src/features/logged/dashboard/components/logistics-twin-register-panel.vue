@@ -9,7 +9,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   registerObstruction: [photo: string | null]
-  skipRegister: []
 }>()
 
 const photo = ref<string | null>(null)
@@ -197,16 +196,8 @@ function removePhoto() {
     </div>
 
     <div
-      class="-mx-4 -mb-4 mt-4 flex shrink-0 flex-col gap-2 border-t border-hw-gray-lighter bg-hw-white-lighter p-3"
+      class="-mx-4 -mb-4 mt-4 shrink-0 border-t border-hw-gray-lighter bg-hw-white-lighter p-3"
     >
-      <button
-        type="button"
-        class="w-full rounded-md border border-hw-gray-lighter bg-hw-white-main px-4 py-3 text-s2 font-bold text-hw-gray-darker transition-colors hover:bg-hw-btn-hover"
-        @click="emit('skipRegister')"
-      >
-        <i class="ti ti-list-search mr-1" aria-hidden="true" />
-        등재 없이 기존 간섭물 조치요청
-      </button>
       <button
         type="button"
         class="w-full rounded-md bg-hw-orange-main px-4 py-3 text-s2 font-bold text-hw-white-main transition-colors hover:bg-hw-orange-dark disabled:bg-hw-gray-main"

@@ -22,7 +22,6 @@ defineProps<{
 
 const emit = defineEmits<{
   registerObstruction: [photo: string | null]
-  skipRegister: []
   selectObstruction: [item: LogisticsTwinObstruction]
   requestMove: [item: LogisticsTwinObstruction]
   confirmDispatch: []
@@ -38,7 +37,6 @@ const emit = defineEmits<{
     v-if="currentStep === 3"
     :pending-location="pendingLocation"
     @register-obstruction="emit('registerObstruction', $event)"
-    @skip-register="emit('skipRegister')"
   />
 
   <LogisticsTwinRequestPanel

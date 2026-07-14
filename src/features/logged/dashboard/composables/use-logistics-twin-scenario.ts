@@ -147,8 +147,18 @@ export function useLogisticsTwinScenario() {
   }
 
   function unlockTablet() {
-    currentStep.value = 3
+    currentStep.value = 4
     showToast('태블릿 잠금이 해제되었습니다')
+  }
+
+  function startRegister() {
+    pendingLocation.value = null
+    currentStep.value = 3
+  }
+
+  function showObstructionList() {
+    pendingLocation.value = null
+    currentStep.value = 4
   }
 
   function pickRegisterLocation(location: LogisticsTwinPendingLocation) {
@@ -184,12 +194,6 @@ export function useLogisticsTwinScenario() {
     pendingLocation.value = null
     currentStep.value = 4
     showToast('도로 간섭물이 등재되었습니다')
-  }
-
-  function skipRegister() {
-    pendingLocation.value = null
-    currentStep.value = 4
-    showToast('기존 도로 간섭물 조치요청으로 이동합니다')
   }
 
   function selectObstruction(item: LogisticsTwinObstruction) {
@@ -278,7 +282,8 @@ export function useLogisticsTwinScenario() {
     selectObstruction,
     selectedDispatchResourceCodes,
     selectedObstruction,
-    skipRegister,
+    showObstructionList,
+    startRegister,
     targetObstruction,
     toastMessage,
     toggleDispatchResource,
