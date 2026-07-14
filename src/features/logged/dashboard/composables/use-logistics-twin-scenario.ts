@@ -60,6 +60,7 @@ export function useLogisticsTwinScenario() {
   const dispatchConfirmed = shallowRef(false)
   const pendingLocation = shallowRef<LogisticsTwinPendingLocation | null>(null)
   const records = shallowRef<LogisticsTwinRecord[]>([])
+  const mapViewResetRequest = shallowRef(0)
   const toastMessage = shallowRef('')
 
   const visibleObstructions = computed(() =>
@@ -385,6 +386,7 @@ export function useLogisticsTwinScenario() {
     dispatchConfirmed.value = false
     pendingLocation.value = null
     currentStep.value = 4
+    mapViewResetRequest.value += 1
   }
 
   function restartScenario() {
@@ -400,6 +402,7 @@ export function useLogisticsTwinScenario() {
     pendingLocation.value = null
     records.value = []
     toastMessage.value = ''
+    mapViewResetRequest.value += 1
   }
 
   return {
@@ -408,6 +411,7 @@ export function useLogisticsTwinScenario() {
     confirmDispatch,
     currentStep,
     dispatchConfirmed,
+    mapViewResetRequest,
     mapMarkers,
     pendingLocation,
     pickRegisterLocation,

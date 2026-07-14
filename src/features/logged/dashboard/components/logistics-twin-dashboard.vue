@@ -17,6 +17,7 @@ const {
   confirmDispatch,
   currentStep,
   dispatchConfirmed,
+  mapViewResetRequest,
   mapMarkers,
   pendingLocation,
   pickRegisterLocation,
@@ -76,6 +77,7 @@ const {
                 :map-markers="mapMarkers"
                 :track-coordinates="trackCoordinates"
                 :track-animated="dispatchConfirmed"
+                :view-reset-request="mapViewResetRequest"
                 :pick-mode="currentStep === 3"
                 @close-marker-info="closeObstructionInfo"
                 @pick-location="pickRegisterLocation"

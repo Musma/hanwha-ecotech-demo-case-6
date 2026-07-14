@@ -68,6 +68,8 @@ interface Props {
   trackAnimated?: boolean
   /** true이면 지도 클릭 좌표를 물리지번으로 변환해 전달한다. */
   pickMode?: boolean
+  /** 값이 증가하면 지도를 초기 카메라 위치로 되돌린다. */
+  viewResetRequest?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -78,6 +80,7 @@ const props = withDefaults(defineProps<Props>(), {
   trackCoordinates: () => [],
   trackAnimated: false,
   pickMode: false,
+  viewResetRequest: 0,
 })
 
 const emit = defineEmits<{
@@ -141,6 +144,25 @@ function updatePickModeCursor() {
   const map = mapRef.value
   if (!map) return
   map.getCanvas().style.cursor = props.pickMode ? 'crosshair' : ''
+}
+
+function resetMapView() {
+  const map = mapRef.value
+  if (!map || !mapLoaded.value) return
+
+  map.fitBounds(mapBounds.value, {
+    bearing: YARD_DEFAULT_BEARING,
+    padding: FIT_BOUNDS_PADDING,
+    duration: 600,
+  })
+  map.once('moveend', () => {
+    if (!mapRef.value || !mapLoaded.value) return
+    map.jumpTo({
+      bearing: YARD_DEFAULT_BEARING,
+      pitch: 0,
+      zoom: map.getZoom() + INITIAL_ZOOM_OFFSET,
+    })
+  })
 }
 
 function handleLocationPick(event: MapMouseEvent) {
@@ -866,6 +888,14 @@ watch(
 watch(
   () => props.pickMode,
   () => updatePickModeCursor(),
+)
+
+watch(
+  () => props.viewResetRequest,
+  (request) => {
+    if (!request) return
+    resetMapView()
+  },
 )
 
 onMounted(() => {
