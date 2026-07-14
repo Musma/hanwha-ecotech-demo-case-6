@@ -560,7 +560,9 @@ function updateMarkers() {
               : 'dashboard-map-marker--warning'
       el.className = `dashboard-map-marker ${markerToneClass}${marker.selected ? ' dashboard-map-marker--selected' : ''}`
       el.title = marker.name ?? marker.label ?? ''
-      if (marker.selected || marker.tone === 'vehicle') {
+      const showWave =
+        marker.showWave ?? (marker.selected || marker.tone === 'vehicle')
+      if (showWave) {
         const waves = Array.from({ length: 3 }, () => {
           const wave = document.createElement('span')
           wave.className = 'dashboard-map-marker__wave'

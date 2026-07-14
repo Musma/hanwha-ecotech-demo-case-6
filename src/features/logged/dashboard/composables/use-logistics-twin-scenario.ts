@@ -73,6 +73,7 @@ export function useLogisticsTwinScenario() {
           name: `등재 위치 ${pendingLocation.value.label}`,
           phys: pendingLocation.value.lngLat,
           selected: true,
+          showWave: false,
           tone: 'obstruction-warn',
         },
       ]
