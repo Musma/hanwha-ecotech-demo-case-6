@@ -167,14 +167,15 @@ export function useLogisticsTwinScenario() {
             iconClass:
               resource.group === '지게차' ? 'ti ti-forklift' : 'ti ti-truck',
             phys: waitingPosition,
-            offset: isNewObstructionTarget
-              ? ([
-                  index % 2 === 0
-                    ? -NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_X
-                    : NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_X,
-                  NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_Y,
-                ] as [number, number])
-              : undefined,
+            offset:
+              isNewObstructionTarget && !isTransporter
+                ? ([
+                    index % 2 === 0
+                      ? -NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_X
+                      : NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_X,
+                    NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_Y,
+                  ] as [number, number])
+                : undefined,
             tone: 'vehicle',
             updatesTrack: isTransporter,
             motion:
