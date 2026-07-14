@@ -64,16 +64,6 @@ function removePhoto() {
   <div class="flex h-full min-h-0 flex-col">
     <div class="main-scroll-style min-h-0 flex-1 space-y-3 overflow-y-auto">
       <div
-        class="flex items-start gap-2 rounded-md border border-dashed border-hw-gray-lighter bg-hw-white-lighter p-3 text-b3 text-hw-gray-dark"
-      >
-        <i class="ti ti-map-pin-plus mt-0.5 text-hw-orange-main" />
-        <span>
-          디지털트윈 가시화 화면에서 도로 간섭물이 위치한 지번을 클릭하면 해당
-          위치가 자동으로 선택됩니다.
-        </span>
-      </div>
-
-      <div
         aria-live="polite"
         class="flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left transition-colors"
         :class="
