@@ -179,9 +179,9 @@ export const LOGISTICS_TWIN_DROP_ZONE = {
 
 export const LOGISTICS_TWIN_NEW_DESTINATION = {
   label: '목적지',
-  jibun: '02-b3',
-  phys: [71, 20] as [number, number],
-  lngLat: [127.59523033820491, 34.902377744735084] as [number, number],
+  jibun: '(082, 022)',
+  phys: [82, 22] as [number, number],
+  lngLat: [127.5963146493744, 34.902844506915244] as [number, number],
 }
 
 export function getLogisticsTwinDestination(
