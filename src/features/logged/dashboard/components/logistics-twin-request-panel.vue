@@ -2,7 +2,6 @@
 import {
   type LogisticsTwinObstruction,
   getLogisticsTwinTone,
-  getLogisticsTwinToneLabel,
 } from '@/features/logged/dashboard/constants/logistics-twin-data'
 
 defineProps<{
@@ -65,90 +64,6 @@ const emit = defineEmits<{
           {{ item.days }}일
         </span>
       </button>
-
-      <div
-        v-if="!selectedObstruction"
-        class="flex min-h-48 flex-col items-center justify-center border-t border-hw-gray-lighter px-6 py-8 text-center"
-      >
-        <span
-          class="mb-3 flex size-10 items-center justify-center rounded-full bg-hw-white-dark text-h5 text-hw-gray-main"
-        >
-          <i class="ti ti-hand-click" aria-hidden="true" />
-        </span>
-        <b class="text-s2 text-hw-text-primary">선택된 간섭물이 없습니다</b>
-        <p class="mt-1 text-c1 text-hw-gray-dark">
-          목록에서 이동을 요청할 간섭물을 선택하세요.
-        </p>
-      </div>
-
-      <div v-else class="border-t border-hw-gray-lighter px-3 py-3">
-        <div class="mb-2 flex items-center justify-between">
-          <b class="text-s2 text-hw-text-primary">
-            {{ selectedObstruction.id }}
-          </b>
-          <span
-            class="rounded-sm bg-hw-green-lighter px-2 py-0.5 text-c1 font-bold text-hw-green-darker"
-          >
-            {{ selectedObstruction.status }}
-          </span>
-        </div>
-        <img
-          v-if="selectedObstruction.photo"
-          :src="selectedObstruction.photo"
-          :alt="`${selectedObstruction.name} 현장 사진`"
-          class="mb-3 h-32 w-full rounded-md border border-hw-gray-lighter object-cover"
-        />
-        <div
-          v-else
-          class="mb-3 flex min-h-28 items-center justify-center rounded-md border border-dashed border-hw-gray-lighter bg-hw-white-lighter text-c1 text-hw-gray-dark"
-        >
-          <i class="ti ti-photo mr-1" aria-hidden="true" />
-          현장 사진 (추후 등록)
-        </div>
-        <dl class="space-y-2 text-c1">
-          <div class="grid grid-cols-[78px_minmax(0,1fr)] gap-2">
-            <dt class="text-hw-gray-dark">간섭물명</dt>
-            <dd class="font-semibold text-hw-text-primary">
-              {{ selectedObstruction.name }}
-            </dd>
-          </div>
-          <div class="grid grid-cols-[78px_minmax(0,1fr)] gap-2">
-            <dt class="text-hw-gray-dark">종류</dt>
-            <dd class="font-semibold text-hw-text-primary">
-              {{ selectedObstruction.kind }}
-            </dd>
-          </div>
-          <div class="grid grid-cols-[78px_minmax(0,1fr)] gap-2">
-            <dt class="text-hw-gray-dark">발견시기</dt>
-            <dd class="font-semibold text-hw-text-primary">
-              {{ selectedObstruction.foundAt }}
-            </dd>
-          </div>
-          <div class="grid grid-cols-[78px_minmax(0,1fr)] gap-2">
-            <dt class="text-hw-gray-dark">위치</dt>
-            <dd class="font-semibold text-hw-text-primary">
-              {{ selectedObstruction.jibun }}
-            </dd>
-          </div>
-          <div class="grid grid-cols-[78px_minmax(0,1fr)] gap-2">
-            <dt class="text-hw-gray-dark">간섭기간</dt>
-            <dd class="font-semibold text-hw-text-primary">
-              {{ selectedObstruction.days }}일 ({{
-                getLogisticsTwinToneLabel(selectedObstruction.days)
-              }})
-            </dd>
-          </div>
-          <div class="grid grid-cols-[78px_minmax(0,1fr)] gap-2">
-            <dt class="text-hw-gray-dark">보고자</dt>
-            <dd class="font-semibold text-hw-text-primary">
-              {{ selectedObstruction.reporter }}
-            </dd>
-          </div>
-        </dl>
-        <p class="mt-3 text-b3 text-hw-gray-dark">
-          {{ selectedObstruction.detail }}
-        </p>
-      </div>
     </div>
 
     <div
