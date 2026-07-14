@@ -285,12 +285,20 @@
 .dashboard-map-marker__info-status {
   flex-shrink: 0;
   padding: 2px 8px;
+  border: 0;
   border-radius: 999px;
   background: var(--color-hw-green-lighter);
   color: var(--color-hw-green-darker);
+  cursor: pointer;
+  font-family: inherit;
   font-size: var(--text-c1);
   font-weight: 700;
   line-height: var(--text-c1--line-height);
+}
+
+.dashboard-map-marker__info-status:focus-visible {
+  outline: 2px solid var(--color-hw-green-dark);
+  outline-offset: 2px;
 }
 
 .dashboard-map-marker__info-image {

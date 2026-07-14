@@ -1,6 +1,9 @@
 import type { MapEntityMarkerInfo } from '@/shared/types/map/yard-map'
 
-export function createDashboardMapMarkerInfoElement(info: MapEntityMarkerInfo) {
+export function createDashboardMapMarkerInfoElement(
+  info: MapEntityMarkerInfo,
+  onClose: () => void,
+) {
   const container = document.createElement('div')
   container.className = 'dashboard-map-marker__info'
   container.setAttribute(
@@ -23,9 +26,16 @@ export function createDashboardMapMarkerInfoElement(info: MapEntityMarkerInfo) {
   header.append(heading)
 
   if (info.status) {
-    const status = document.createElement('span')
+    const status = document.createElement('button')
     status.className = 'dashboard-map-marker__info-status'
+    status.type = 'button'
     status.textContent = info.status
+    status.setAttribute('aria-label', `${info.label} 상세 정보 닫기`)
+    status.addEventListener('click', (event) => {
+      event.stopPropagation()
+      onClose()
+    })
+    status.addEventListener('keydown', (event) => event.stopPropagation())
     header.append(status)
   }
 

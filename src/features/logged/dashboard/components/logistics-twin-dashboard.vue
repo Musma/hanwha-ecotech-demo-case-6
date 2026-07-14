@@ -12,6 +12,7 @@ const { jibunPolygons } = useDashboardMapState()
 const { currentDate, currentTime } = useTabletClock()
 const tabletBackgroundImage = `url(${import.meta.env.BASE_URL}login.webp)`
 const {
+  closeObstructionInfo,
   completeRecord,
   confirmDispatch,
   currentStep,
@@ -76,6 +77,7 @@ const {
                 :track-coordinates="trackCoordinates"
                 :track-animated="dispatchConfirmed"
                 :pick-mode="currentStep === 3"
+                @close-marker-info="closeObstructionInfo"
                 @pick-location="pickRegisterLocation"
                 @select-marker="selectObstructionById"
               >

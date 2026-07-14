@@ -17,6 +17,7 @@ export function useLogisticsTwinScenario() {
     LOGISTICS_TWIN_OBSTRUCTIONS.map((item) => ({ ...item })),
   )
   const selectedId = shallowRef('')
+  const markerInfoId = shallowRef('')
   const targetId = shallowRef('')
   const selectedDispatchResourceCode = shallowRef('')
   const dispatchConfirmed = shallowRef(false)
@@ -61,7 +62,7 @@ export function useLogisticsTwinScenario() {
         selectable: currentStep.value === 4,
         focusOnSelect: true,
         info:
-          currentStep.value === 4
+          currentStep.value === 4 && item.id === markerInfoId.value
             ? {
                 label: item.label,
                 title: item.name,
@@ -172,18 +173,21 @@ export function useLogisticsTwinScenario() {
 
   function unlockTablet() {
     selectedId.value = ''
+    markerInfoId.value = ''
     currentStep.value = 4
     showToast('태블릿 잠금이 해제되었습니다')
   }
 
   function startRegister() {
     pendingLocation.value = null
+    markerInfoId.value = ''
     currentStep.value = 3
   }
 
   function showObstructionList() {
     pendingLocation.value = null
     selectedId.value = ''
+    markerInfoId.value = ''
     currentStep.value = 4
   }
 
@@ -217,6 +221,7 @@ export function useLogisticsTwinScenario() {
       ...obstructions.value.filter((item) => item.id !== newItem.id),
     ]
     selectedId.value = newItem.id
+    markerInfoId.value = newItem.id
     pendingLocation.value = null
     currentStep.value = 4
     showToast('도로 간섭물이 등재되었습니다')
@@ -224,6 +229,7 @@ export function useLogisticsTwinScenario() {
 
   function selectObstruction(item: LogisticsTwinObstruction) {
     selectedId.value = item.id
+    markerInfoId.value = item.id
     currentStep.value = Math.max(currentStep.value, 4)
     dispatchConfirmed.value = false
     showToast(`${item.label} 간섭물을 선택했습니다`)
@@ -238,8 +244,14 @@ export function useLogisticsTwinScenario() {
     if (item) selectObstruction(item)
   }
 
+  function closeObstructionInfo(id: string) {
+    if (currentStep.value !== 4 || markerInfoId.value !== id) return
+    markerInfoId.value = ''
+  }
+
   function requestMove(item: LogisticsTwinObstruction) {
     selectedId.value = item.id
+    markerInfoId.value = ''
     targetId.value = item.id
     updateObstructionStatus(item.id, '이동요청')
     currentStep.value = 5
@@ -290,6 +302,7 @@ export function useLogisticsTwinScenario() {
       ...item,
     }))
     selectedId.value = ''
+    markerInfoId.value = ''
     targetId.value = ''
     selectedDispatchResourceCode.value = ''
     dispatchConfirmed.value = false
@@ -299,6 +312,7 @@ export function useLogisticsTwinScenario() {
   }
 
   return {
+    closeObstructionInfo,
     completeRecord,
     confirmDispatch,
     currentStep,

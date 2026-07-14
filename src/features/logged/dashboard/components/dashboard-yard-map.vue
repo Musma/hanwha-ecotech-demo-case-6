@@ -78,6 +78,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
+  closeMarkerInfo: [id: string]
   pickLocation: [location: LogisticsTwinPendingLocation]
   selectMarker: [id: string]
 }>()
@@ -579,8 +580,13 @@ function updateMarkers() {
         })
       }
 
-      if (marker.selected && marker.info) {
-        el.append(createDashboardMapMarkerInfoElement(marker.info))
+      if (marker.selected && marker.info && marker.id) {
+        const markerId = marker.id
+        el.append(
+          createDashboardMapMarkerInfoElement(marker.info, () =>
+            emit('closeMarkerInfo', markerId),
+          ),
+        )
       }
 
       const showWave =
