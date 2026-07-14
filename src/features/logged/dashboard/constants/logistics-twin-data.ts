@@ -189,7 +189,7 @@ export const LOGISTICS_TWIN_DISPATCH_RESOURCES: LogisticsTwinDispatchResource[] 
       group: '트랜스포터',
       ton: '120T',
       driver: '박운행',
-      status: '운행중',
+      status: '대기',
     },
   ]
 
