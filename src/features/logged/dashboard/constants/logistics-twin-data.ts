@@ -185,9 +185,9 @@ export const LOGISTICS_TWIN_DISPATCH_RESOURCES: LogisticsTwinDispatchResource[] 
       status: '대기',
     },
     {
-      code: 'TR-12',
-      group: '트랜스포터',
-      ton: '120T',
+      code: 'FL-12',
+      group: '지게차',
+      ton: '16T',
       driver: '박운행',
       status: '대기',
     },
