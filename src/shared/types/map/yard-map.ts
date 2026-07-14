@@ -52,6 +52,7 @@ export interface MapEntityMarkerItem {
   id?: string
   label?: string
   name?: string
+  iconClass?: string
   phys?: number[]
   selected?: boolean
   selectable?: boolean
@@ -60,6 +61,7 @@ export interface MapEntityMarkerItem {
   showWave?: boolean
   tone?: string
   motion?: MapEntityMarkerMotion
+  updatesTrack?: boolean
   popup?: unknown
 }
 

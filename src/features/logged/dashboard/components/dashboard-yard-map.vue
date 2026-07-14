@@ -604,7 +604,7 @@ function updateMarkers() {
       tag.className = 'dashboard-map-marker__tag'
       if (marker.tone === 'vehicle') {
         const icon = document.createElement('i')
-        icon.className = 'ti ti-truck'
+        icon.className = marker.iconClass ?? 'ti ti-truck'
         icon.setAttribute('aria-hidden', 'true')
         tag.append(icon)
       } else {
@@ -631,7 +631,10 @@ function updateMarkers() {
             mapMarker,
             [marker.phys[0], marker.phys[1]],
             motion,
-            (position) => updateWorkTrackStart(position, motion.destination),
+            marker.updatesTrack === false
+              ? undefined
+              : (position) =>
+                  updateWorkTrackStart(position, motion.destination),
           ),
         )
       }

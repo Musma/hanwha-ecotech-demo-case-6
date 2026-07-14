@@ -1,6 +1,7 @@
 import { computed, shallowRef } from 'vue'
 
 import {
+  LOGISTICS_TWIN_DISPATCH_RESOURCES,
   LOGISTICS_TWIN_DROP_ZONE,
   LOGISTICS_TWIN_OBSTRUCTIONS,
   type LogisticsTwinObstruction,
@@ -107,35 +108,42 @@ export function useLogisticsTwinScenario() {
     if (currentStep.value !== 5) return obstructionMarkers
 
     const target = targetObstruction.value
-    const waitingVehiclePosition: [number, number] | null = target
-      ? [
-          target.lngLat[0] +
-            (LOGISTICS_TWIN_DROP_ZONE.lngLat[0] - target.lngLat[0]) * 0.3,
-          target.lngLat[1] +
-            (LOGISTICS_TWIN_DROP_ZONE.lngLat[1] - target.lngLat[1]) * 0.3,
-        ]
-      : null
-    const vehicleMarker: MapEntityMarkerItem[] =
-      target && waitingVehiclePosition
-        ? [
-            {
-              id: 'scenario-vehicle',
-              label: dispatchConfirmed.value ? '조치중' : '배차 대기',
-              name: dispatchConfirmed.value ? '조치중 차량' : '대기 차량',
-              phys: waitingVehiclePosition,
-              tone: 'vehicle',
-              motion: dispatchConfirmed.value
-                ? {
-                    stop: target.lngLat,
-                    destination: LOGISTICS_TWIN_DROP_ZONE.lngLat,
-                    approachDurationMs: 1800,
-                    dwellDurationMs: 2000,
-                    departureDurationMs: 5000,
-                  }
-                : undefined,
-            },
+    const selectedDispatchResources = LOGISTICS_TWIN_DISPATCH_RESOURCES.filter(
+      (resource) => selectedDispatchResourceCodes.value.includes(resource.code),
+    )
+    const vehicleMarkers: MapEntityMarkerItem[] = target
+      ? selectedDispatchResources.map((resource, index) => {
+          const routeRatio = 0.25 + index * 0.1
+          const waitingPosition: [number, number] = [
+            target.lngLat[0] +
+              (LOGISTICS_TWIN_DROP_ZONE.lngLat[0] - target.lngLat[0]) *
+                routeRatio,
+            target.lngLat[1] +
+              (LOGISTICS_TWIN_DROP_ZONE.lngLat[1] - target.lngLat[1]) *
+                routeRatio,
           ]
-        : []
+
+          return {
+            id: `scenario-vehicle-${resource.code}`,
+            label: resource.code,
+            name: `${resource.group} ${resource.code}`,
+            iconClass:
+              resource.group === '지게차' ? 'ti ti-forklift' : 'ti ti-truck',
+            phys: waitingPosition,
+            tone: 'vehicle',
+            updatesTrack: index === 0,
+            motion: dispatchConfirmed.value
+              ? {
+                  stop: target.lngLat,
+                  destination: LOGISTICS_TWIN_DROP_ZONE.lngLat,
+                  approachDurationMs: 1800 + index * 300,
+                  dwellDurationMs: 2000,
+                  departureDurationMs: 5000 + index * 300,
+                }
+              : undefined,
+          }
+        })
+      : []
 
     return [
       ...obstructionMarkers,
@@ -146,7 +154,7 @@ export function useLogisticsTwinScenario() {
         phys: LOGISTICS_TWIN_DROP_ZONE.lngLat,
         tone: 'drop-zone',
       },
-      ...vehicleMarker,
+      ...vehicleMarkers,
     ]
   })
 
