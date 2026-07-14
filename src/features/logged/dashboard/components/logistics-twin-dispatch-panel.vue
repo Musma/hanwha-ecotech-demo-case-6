@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import {
   LOGISTICS_TWIN_DISPATCH_RESOURCES,
-  LOGISTICS_TWIN_DROP_ZONE,
   type LogisticsTwinObstruction,
+  getLogisticsTwinDestination,
 } from '@/features/logged/dashboard/constants/logistics-twin-data'
 
 const props = defineProps<{
@@ -20,6 +22,10 @@ const emit = defineEmits<{
 function isResourceSelected(code: string) {
   return props.selectedResourceCodes.includes(code)
 }
+
+const destination = computed(() =>
+  getLogisticsTwinDestination(props.targetObstruction),
+)
 </script>
 
 <template>
@@ -28,8 +34,7 @@ function isResourceSelected(code: string) {
       <div>
         <p class="text-s2 font-bold text-hw-text-primary">조치</p>
         <p class="mt-2 text-b3 text-hw-gray-dark">
-          {{ targetObstruction.name }}을
-          {{ LOGISTICS_TWIN_DROP_ZONE.jibun }}으로 이동합니다.
+          {{ targetObstruction.name }}을 {{ destination.jibun }}으로 이동합니다.
         </p>
       </div>
 
@@ -47,10 +52,10 @@ function isResourceSelected(code: string) {
           </dd>
         </div>
         <div class="grid grid-cols-[78px_minmax(0,1fr)] gap-2">
-          <dt class="text-hw-gray-dark">도착</dt>
+          <dt class="text-hw-gray-dark">목적지</dt>
           <dd class="font-semibold text-hw-text-primary">
-            {{ LOGISTICS_TWIN_DROP_ZONE.jibun }} ·
-            {{ LOGISTICS_TWIN_DROP_ZONE.label }}
+            {{ destination.jibun }} ·
+            {{ destination.label }}
           </dd>
         </div>
       </dl>
@@ -129,7 +134,7 @@ function isResourceSelected(code: string) {
           >
             <span>{{ targetObstruction.jibun }}</span>
             <i class="ti ti-arrow-right text-hw-orange-main" />
-            <span>{{ LOGISTICS_TWIN_DROP_ZONE.jibun }}</span>
+            <span>{{ destination.jibun }}</span>
           </div>
           <p>
             배차 장비:

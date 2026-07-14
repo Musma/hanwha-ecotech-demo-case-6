@@ -612,7 +612,11 @@ function updateMarkers() {
       }
       el.append(tag)
 
-      const mapMarker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+      const mapMarker = new maplibregl.Marker({
+        element: el,
+        anchor: 'bottom',
+        offset: marker.offset ?? [0, 0],
+      })
         .setLngLat([marker.phys[0], marker.phys[1]])
         .addTo(map)
       if (marker.selectable) {

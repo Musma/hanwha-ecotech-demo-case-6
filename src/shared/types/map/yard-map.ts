@@ -54,6 +54,7 @@ export interface MapEntityMarkerItem {
   name?: string
   iconClass?: string
   phys?: number[]
+  offset?: [number, number]
   selected?: boolean
   selectable?: boolean
   focusOnSelect?: boolean

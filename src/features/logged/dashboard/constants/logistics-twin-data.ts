@@ -168,11 +168,28 @@ export const LOGISTICS_TWIN_PIN_POSITIONS: Record<
   'OBS-2605-022': { x: 60, y: 57 },
 }
 
+export const LOGISTICS_TWIN_NEW_OBSTRUCTION_ID = 'OBS-2605-101'
+
 export const LOGISTICS_TWIN_DROP_ZONE = {
-  label: '집하장',
+  label: '목적지',
   jibun: '1Y-집하-01',
   phys: [142, 6] as [number, number],
   lngLat: [127.602706, 34.904926] as [number, number],
+}
+
+export const LOGISTICS_TWIN_NEW_DESTINATION = {
+  label: '목적지',
+  jibun: '02-b3',
+  phys: [71, 20] as [number, number],
+  lngLat: [127.59523033820491, 34.902377744735084] as [number, number],
+}
+
+export function getLogisticsTwinDestination(
+  obstruction?: LogisticsTwinObstruction | null,
+) {
+  return obstruction?.id === LOGISTICS_TWIN_NEW_OBSTRUCTION_ID
+    ? LOGISTICS_TWIN_NEW_DESTINATION
+    : LOGISTICS_TWIN_DROP_ZONE
 }
 
 export const LOGISTICS_TWIN_DISPATCH_RESOURCES: LogisticsTwinDispatchResource[] =

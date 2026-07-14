@@ -2,11 +2,12 @@ import { computed, shallowRef } from 'vue'
 
 import {
   LOGISTICS_TWIN_DISPATCH_RESOURCES,
-  LOGISTICS_TWIN_DROP_ZONE,
+  LOGISTICS_TWIN_NEW_OBSTRUCTION_ID,
   LOGISTICS_TWIN_OBSTRUCTIONS,
   type LogisticsTwinObstruction,
   type LogisticsTwinPendingLocation,
   type LogisticsTwinRecord,
+  getLogisticsTwinDestination,
   getLogisticsTwinTone,
   getLogisticsTwinToneLabel,
 } from '@/features/logged/dashboard/constants/logistics-twin-data'
@@ -108,20 +109,23 @@ export function useLogisticsTwinScenario() {
     if (currentStep.value !== 5) return obstructionMarkers
 
     const target = targetObstruction.value
+    const destination = getLogisticsTwinDestination(target)
+    const isNewObstructionTarget =
+      target?.id === LOGISTICS_TWIN_NEW_OBSTRUCTION_ID
     const selectedDispatchResources = LOGISTICS_TWIN_DISPATCH_RESOURCES.filter(
       (resource) => selectedDispatchResourceCodes.value.includes(resource.code),
     )
     const vehicleMarkers: MapEntityMarkerItem[] = target
       ? selectedDispatchResources.map((resource, index) => {
           const routeRatio = 0.25 + index * 0.1
-          const waitingPosition: [number, number] = [
-            target.lngLat[0] +
-              (LOGISTICS_TWIN_DROP_ZONE.lngLat[0] - target.lngLat[0]) *
-                routeRatio,
-            target.lngLat[1] +
-              (LOGISTICS_TWIN_DROP_ZONE.lngLat[1] - target.lngLat[1]) *
-                routeRatio,
-          ]
+          const waitingPosition: [number, number] = isNewObstructionTarget
+            ? target.lngLat
+            : [
+                target.lngLat[0] +
+                  (destination.lngLat[0] - target.lngLat[0]) * routeRatio,
+                target.lngLat[1] +
+                  (destination.lngLat[1] - target.lngLat[1]) * routeRatio,
+              ]
 
           return {
             id: `scenario-vehicle-${resource.code}`,
@@ -130,12 +134,15 @@ export function useLogisticsTwinScenario() {
             iconClass:
               resource.group === '지게차' ? 'ti ti-forklift' : 'ti ti-truck',
             phys: waitingPosition,
+            offset: isNewObstructionTarget
+              ? ([index % 2 === 0 ? -18 : 18, 0] as [number, number])
+              : undefined,
             tone: 'vehicle',
             updatesTrack: index === 0,
             motion: dispatchConfirmed.value
               ? {
                   stop: target.lngLat,
-                  destination: LOGISTICS_TWIN_DROP_ZONE.lngLat,
+                  destination: destination.lngLat,
                   approachDurationMs: 1800 + index * 300,
                   dwellDurationMs: 2000,
                   departureDurationMs: 5000 + index * 300,
@@ -149,9 +156,9 @@ export function useLogisticsTwinScenario() {
       ...obstructionMarkers,
       {
         id: 'drop-zone',
-        label: '집하',
-        name: LOGISTICS_TWIN_DROP_ZONE.jibun,
-        phys: LOGISTICS_TWIN_DROP_ZONE.lngLat,
+        label: '목적지',
+        name: destination.jibun,
+        phys: destination.lngLat,
         tone: 'drop-zone',
       },
       ...vehicleMarkers,
@@ -160,7 +167,10 @@ export function useLogisticsTwinScenario() {
 
   const trackCoordinates = computed<Array<[number, number]>>(() => {
     if (currentStep.value !== 5 || !targetObstruction.value) return []
-    return [targetObstruction.value.lngLat, LOGISTICS_TWIN_DROP_ZONE.lngLat]
+    return [
+      targetObstruction.value.lngLat,
+      getLogisticsTwinDestination(targetObstruction.value).lngLat,
+    ]
   })
 
   function updateObstructionStatus(
@@ -209,7 +219,7 @@ export function useLogisticsTwinScenario() {
     if (!pending) return
 
     const newItem: LogisticsTwinObstruction = {
-      id: 'OBS-2605-101',
+      id: LOGISTICS_TWIN_NEW_OBSTRUCTION_ID,
       label: 'OB51',
       name: '신규 적치 자재',
       kind: '자재(배관)',
