@@ -40,7 +40,7 @@ const emit = defineEmits<{
   />
 
   <LogisticsTwinRequestPanel
-    v-else-if="currentStep === 4 && selectedObstruction"
+    v-else-if="currentStep === 4"
     :obstructions="obstructions"
     :selected-obstruction="selectedObstruction"
     @select-obstruction="emit('selectObstruction', $event)"

@@ -7,7 +7,7 @@ import {
 
 defineProps<{
   obstructions: LogisticsTwinObstruction[]
-  selectedObstruction: LogisticsTwinObstruction
+  selectedObstruction: LogisticsTwinObstruction | null
 }>()
 
 const emit = defineEmits<{
@@ -37,7 +37,7 @@ const emit = defineEmits<{
         type="button"
         class="flex w-full items-center gap-2 border-l-4 px-3 py-2 text-left transition-colors"
         :class="
-          item.id === selectedObstruction.id
+          item.id === selectedObstruction?.id
             ? 'border-l-hw-orange-main bg-hw-orange-lighter/20'
             : 'border-l-transparent bg-hw-white-main hover:bg-hw-white-lighter'
         "
@@ -66,7 +66,22 @@ const emit = defineEmits<{
         </span>
       </button>
 
-      <div class="border-t border-hw-gray-lighter px-3 py-3">
+      <div
+        v-if="!selectedObstruction"
+        class="flex min-h-48 flex-col items-center justify-center border-t border-hw-gray-lighter px-6 py-8 text-center"
+      >
+        <span
+          class="mb-3 flex size-10 items-center justify-center rounded-full bg-hw-white-dark text-h5 text-hw-gray-main"
+        >
+          <i class="ti ti-hand-click" aria-hidden="true" />
+        </span>
+        <b class="text-s2 text-hw-text-primary">선택된 간섭물이 없습니다</b>
+        <p class="mt-1 text-c1 text-hw-gray-dark">
+          목록에서 이동을 요청할 간섭물을 선택하세요.
+        </p>
+      </div>
+
+      <div v-else class="border-t border-hw-gray-lighter px-3 py-3">
         <div class="mb-2 flex items-center justify-between">
           <b class="text-s2 text-hw-text-primary">
             {{ selectedObstruction.id }}
@@ -141,8 +156,9 @@ const emit = defineEmits<{
     >
       <button
         type="button"
-        class="rounded-md bg-hw-orange-main px-3 py-3 text-s2 font-bold text-hw-white-main transition-colors hover:bg-hw-orange-dark"
-        @click="emit('requestMove', selectedObstruction)"
+        class="rounded-md bg-hw-orange-main px-3 py-3 text-s2 font-bold text-hw-white-main transition-colors hover:bg-hw-orange-dark disabled:cursor-not-allowed disabled:bg-hw-gray-main"
+        :disabled="!selectedObstruction"
+        @click="selectedObstruction && emit('requestMove', selectedObstruction)"
       >
         <i class="ti ti-send mr-1" aria-hidden="true" />
         간섭물 이동 요청

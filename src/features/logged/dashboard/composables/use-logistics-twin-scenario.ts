@@ -15,7 +15,7 @@ export function useLogisticsTwinScenario() {
   const obstructions = shallowRef<LogisticsTwinObstruction[]>(
     LOGISTICS_TWIN_OBSTRUCTIONS.map((item) => ({ ...item })),
   )
-  const selectedId = shallowRef(LOGISTICS_TWIN_OBSTRUCTIONS[0]?.id ?? '')
+  const selectedId = shallowRef('')
   const targetId = shallowRef('')
   const selectedDispatchResourceCodes = shallowRef<string[]>([])
   const dispatchConfirmed = shallowRef(false)
@@ -30,7 +30,6 @@ export function useLogisticsTwinScenario() {
   const selectedObstruction = computed(
     () =>
       visibleObstructions.value.find((item) => item.id === selectedId.value) ??
-      visibleObstructions.value[0] ??
       null,
   )
 
@@ -147,6 +146,7 @@ export function useLogisticsTwinScenario() {
   }
 
   function unlockTablet() {
+    selectedId.value = ''
     currentStep.value = 4
     showToast('태블릿 잠금이 해제되었습니다')
   }
@@ -158,6 +158,7 @@ export function useLogisticsTwinScenario() {
 
   function showObstructionList() {
     pendingLocation.value = null
+    selectedId.value = ''
     currentStep.value = 4
   }
 
@@ -258,7 +259,7 @@ export function useLogisticsTwinScenario() {
     obstructions.value = LOGISTICS_TWIN_OBSTRUCTIONS.map((item) => ({
       ...item,
     }))
-    selectedId.value = LOGISTICS_TWIN_OBSTRUCTIONS[0]?.id ?? ''
+    selectedId.value = ''
     targetId.value = ''
     selectedDispatchResourceCodes.value = []
     dispatchConfirmed.value = false
