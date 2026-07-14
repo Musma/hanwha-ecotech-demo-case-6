@@ -120,6 +120,7 @@ export function useLogisticsTwinScenario() {
     )
     const vehicleMarkers: MapEntityMarkerItem[] = target
       ? selectedDispatchResources.map((resource, index) => {
+          const isTransporter = resource.group === '트랜스포터'
           const routeRatio = 0.25 + index * 0.1
           const waitingPosition: [number, number] = isNewObstructionTarget
             ? target.lngLat
@@ -146,16 +147,17 @@ export function useLogisticsTwinScenario() {
                 ] as [number, number])
               : undefined,
             tone: 'vehicle',
-            updatesTrack: index === 0,
-            motion: dispatchConfirmed.value
-              ? {
-                  stop: target.lngLat,
-                  destination: destination.lngLat,
-                  approachDurationMs: 1800 + index * 300,
-                  dwellDurationMs: 2000,
-                  departureDurationMs: 5000 + index * 300,
-                }
-              : undefined,
+            updatesTrack: isTransporter,
+            motion:
+              dispatchConfirmed.value && isTransporter
+                ? {
+                    stop: target.lngLat,
+                    destination: destination.lngLat,
+                    approachDurationMs: 1800 + index * 300,
+                    dwellDurationMs: 2000,
+                    departureDurationMs: 5000 + index * 300,
+                  }
+                : undefined,
           }
         })
       : []
