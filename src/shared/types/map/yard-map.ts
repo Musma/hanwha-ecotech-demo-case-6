@@ -33,6 +33,19 @@ export interface MapEntityMarkerMotion {
   departureDurationMs: number
 }
 
+export interface MapEntityMarkerInfoRow {
+  label: string
+  value: string
+}
+
+export interface MapEntityMarkerInfo {
+  label: string
+  title: string
+  status?: string
+  rows: MapEntityMarkerInfoRow[]
+  description?: string
+}
+
 export interface MapEntityMarkerItem {
   id?: string
   label?: string
@@ -40,6 +53,7 @@ export interface MapEntityMarkerItem {
   phys?: number[]
   selected?: boolean
   focusOnSelect?: boolean
+  info?: MapEntityMarkerInfo
   showWave?: boolean
   tone?: string
   motion?: MapEntityMarkerMotion

@@ -11,6 +11,7 @@ import { computed, onMounted, onUnmounted, shallowRef, watch } from 'vue'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
 import type { LogisticsTwinPendingLocation } from '@/features/logged/dashboard/constants/logistics-twin-data'
+import { createDashboardMapMarkerInfoElement } from '@/features/logged/dashboard/utils/map-marker-info'
 import { startVehicleRouteAnimation } from '@/features/logged/dashboard/utils/vehicle-route-animation'
 import {
   WORK_TRACK_BASE_DASH_ARRAY,
@@ -104,6 +105,7 @@ const INITIAL_ZOOM_OFFSET = 1
 const SELECTED_MARKER_FOCUS_ZOOM_INCREMENT = 1
 const SELECTED_MARKER_MAX_FOCUS_ZOOM = 17
 const SELECTED_MARKER_FOCUS_DURATION_MS = 650
+const SELECTED_MARKER_FOCUS_OFFSET: [number, number] = [0, 100]
 const YARD_GRID_SOURCE_ID = 'dashboard-yard-grid'
 const YARD_GRID_LAYER_ID = 'dashboard-yard-grid'
 const JIBUN_POLYGON_SOURCE_ID = 'dashboard-jibun-polygons'
@@ -563,6 +565,11 @@ function updateMarkers() {
               : 'dashboard-map-marker--warning'
       el.className = `dashboard-map-marker ${markerToneClass}${marker.selected ? ' dashboard-map-marker--selected' : ''}`
       el.title = marker.name ?? marker.label ?? ''
+
+      if (marker.selected && marker.info) {
+        el.append(createDashboardMapMarkerInfoElement(marker.info))
+      }
+
       const showWave =
         marker.showWave ?? (marker.selected || marker.tone === 'vehicle')
       if (showWave) {
@@ -621,6 +628,7 @@ function focusSelectedMarker() {
   const currentZoom = map.getZoom()
   map.easeTo({
     center: [lng, lat],
+    offset: SELECTED_MARKER_FOCUS_OFFSET,
     zoom: Math.max(
       currentZoom,
       Math.min(
