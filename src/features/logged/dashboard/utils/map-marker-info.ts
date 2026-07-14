@@ -29,6 +29,17 @@ export function createDashboardMapMarkerInfoElement(info: MapEntityMarkerInfo) {
     header.append(status)
   }
 
+  container.append(header)
+
+  if (info.imageSrc) {
+    const image = document.createElement('img')
+    image.className = 'dashboard-map-marker__info-image'
+    image.src = info.imageSrc
+    image.alt = info.imageAlt ?? `${info.title} 현장 사진`
+    image.loading = 'lazy'
+    container.append(image)
+  }
+
   const list = document.createElement('dl')
   list.className = 'dashboard-map-marker__info-list'
   info.rows.forEach((row) => {
@@ -42,7 +53,7 @@ export function createDashboardMapMarkerInfoElement(info: MapEntityMarkerInfo) {
     list.append(item)
   })
 
-  container.append(header, list)
+  container.append(list)
   if (info.description) {
     const description = document.createElement('p')
     description.className = 'dashboard-map-marker__info-description'

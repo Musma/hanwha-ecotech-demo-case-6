@@ -63,6 +63,8 @@ export function useLogisticsTwinScenario() {
           label: item.label,
           title: item.name,
           status: item.status,
+          imageSrc: item.photo,
+          imageAlt: `${item.name} 현장 사진`,
           rows: [
             { label: '종류', value: item.kind },
             { label: '위치', value: item.jibun },

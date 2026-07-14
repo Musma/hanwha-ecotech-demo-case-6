@@ -275,6 +275,16 @@
   line-height: var(--text-c1--line-height);
 }
 
+.dashboard-map-marker__info-image {
+  display: block;
+  width: 100%;
+  height: 76px;
+  margin-top: 8px;
+  border: 1px solid var(--color-hw-gray-lighter);
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+}
+
 .dashboard-map-marker__info-list {
   display: grid;
   gap: 5px;

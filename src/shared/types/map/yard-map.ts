@@ -42,6 +42,8 @@ export interface MapEntityMarkerInfo {
   label: string
   title: string
   status?: string
+  imageSrc?: string
+  imageAlt?: string
   rows: MapEntityMarkerInfoRow[]
   description?: string
 }
