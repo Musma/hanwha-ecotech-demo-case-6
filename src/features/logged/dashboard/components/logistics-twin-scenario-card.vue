@@ -15,7 +15,7 @@ defineProps<{
   selectedObstruction: LogisticsTwinObstruction | null
   targetObstruction: LogisticsTwinObstruction | null
   dispatchConfirmed: boolean
-  selectedResourceCode: string
+  selectedResourceCodes: string[]
   pendingLocation: LogisticsTwinPendingLocation | null
   records: LogisticsTwinRecord[]
 }>()
@@ -25,7 +25,7 @@ const emit = defineEmits<{
   selectObstruction: [item: LogisticsTwinObstruction]
   requestMove: [item: LogisticsTwinObstruction]
   confirmDispatch: []
-  selectResource: [code: string]
+  toggleResource: [code: string]
   updateStep: [step: number]
   completeRecord: []
   restart: []
@@ -51,8 +51,8 @@ const emit = defineEmits<{
     v-else-if="currentStep === 5 && targetObstruction"
     :target-obstruction="targetObstruction"
     :dispatch-confirmed="dispatchConfirmed"
-    :selected-resource-code="selectedResourceCode"
-    @select-resource="emit('selectResource', $event)"
+    :selected-resource-codes="selectedResourceCodes"
+    @toggle-resource="emit('toggleResource', $event)"
     @confirm-dispatch="emit('confirmDispatch')"
     @complete-record="emit('completeRecord')"
   />

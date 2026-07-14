@@ -5,17 +5,21 @@ import {
   type LogisticsTwinObstruction,
 } from '@/features/logged/dashboard/constants/logistics-twin-data'
 
-defineProps<{
+const props = defineProps<{
   targetObstruction: LogisticsTwinObstruction
   dispatchConfirmed: boolean
-  selectedResourceCode: string
+  selectedResourceCodes: string[]
 }>()
 
 const emit = defineEmits<{
   confirmDispatch: []
   completeRecord: []
-  selectResource: [code: string]
+  toggleResource: [code: string]
 }>()
+
+function isResourceSelected(code: string) {
+  return props.selectedResourceCodes.includes(code)
+}
 </script>
 
 <template>
@@ -55,34 +59,34 @@ const emit = defineEmits<{
         <p class="mb-2 text-c1 font-bold text-hw-gray-darker">
           추천 배차 자원 {{ LOGISTICS_TWIN_DISPATCH_RESOURCES.length }}대
         </p>
-        <ul class="space-y-2" role="radiogroup" aria-label="배차 자원 선택">
+        <ul class="space-y-2" role="group" aria-label="배차 자원 선택">
           <li
             v-for="resource in LOGISTICS_TWIN_DISPATCH_RESOURCES"
             :key="resource.code"
           >
             <button
               type="button"
-              role="radio"
+              role="checkbox"
               class="flex w-full items-center gap-2 rounded-md border p-2 text-left transition-colors"
               :class="
-                selectedResourceCode === resource.code
+                isResourceSelected(resource.code)
                   ? 'border-hw-orange-main bg-hw-orange-lighter/20'
                   : 'border-hw-gray-lighter bg-hw-white-main hover:bg-hw-white-lighter'
               "
-              :aria-checked="selectedResourceCode === resource.code"
+              :aria-checked="isResourceSelected(resource.code)"
               :disabled="dispatchConfirmed"
-              @click="emit('selectResource', resource.code)"
+              @click="emit('toggleResource', resource.code)"
             >
               <span
-                class="flex size-5 shrink-0 items-center justify-center rounded-full border"
+                class="flex size-5 shrink-0 items-center justify-center rounded-sm border"
                 :class="
-                  selectedResourceCode === resource.code
+                  isResourceSelected(resource.code)
                     ? 'border-hw-orange-main bg-hw-white-main text-hw-orange-main'
                     : 'border-hw-gray-main bg-hw-white-main text-transparent'
                 "
                 aria-hidden="true"
               >
-                <span class="size-2 rounded-full bg-current" />
+                <i class="ti ti-check text-c1" />
               </span>
               <i class="ti ti-truck text-h5 text-hw-gray-dark" />
               <span class="min-w-0 flex-1">
@@ -129,7 +133,7 @@ const emit = defineEmits<{
           </div>
           <p>
             배차 장비:
-            {{ selectedResourceCode }}
+            {{ selectedResourceCodes.join(', ') }}
           </p>
           <p class="font-bold text-hw-green-dark">
             <i class="ti ti-circle-check mr-1" aria-hidden="true" />
@@ -145,7 +149,7 @@ const emit = defineEmits<{
       <button
         type="button"
         class="w-full rounded-md bg-hw-orange-main px-4 py-3 text-s2 font-bold text-hw-white-main transition-colors hover:bg-hw-orange-dark disabled:cursor-not-allowed disabled:bg-hw-gray-light disabled:text-hw-gray-dark"
-        :disabled="!dispatchConfirmed && !selectedResourceCode"
+        :disabled="!dispatchConfirmed && selectedResourceCodes.length === 0"
         @click="
           dispatchConfirmed ? emit('completeRecord') : emit('confirmDispatch')
         "
