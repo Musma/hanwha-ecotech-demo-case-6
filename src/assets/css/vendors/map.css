@@ -168,6 +168,10 @@
   outline-offset: 3px;
 }
 
+.dashboard-map-marker--selected {
+  z-index: 10;
+}
+
 .dashboard-map-marker__tag {
   position: relative;
   z-index: 2;
