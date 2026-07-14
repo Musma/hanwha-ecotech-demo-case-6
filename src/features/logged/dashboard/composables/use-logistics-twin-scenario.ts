@@ -377,6 +377,16 @@ export function useLogisticsTwinScenario() {
     showToast('간섭물 이동 실적이 기록되었습니다')
   }
 
+  function showCompletedList() {
+    selectedId.value = ''
+    markerInfoId.value = ''
+    targetId.value = ''
+    selectedDispatchResourceCodes.value = []
+    dispatchConfirmed.value = false
+    pendingLocation.value = null
+    currentStep.value = 4
+  }
+
   function restartScenario() {
     currentStep.value = 1
     obstructions.value = LOGISTICS_TWIN_OBSTRUCTIONS.map((item) => ({
@@ -409,6 +419,7 @@ export function useLogisticsTwinScenario() {
     selectObstructionById,
     selectedDispatchResourceCodes,
     selectedObstruction,
+    showCompletedList,
     showObstructionList,
     startRegister,
     targetObstruction,

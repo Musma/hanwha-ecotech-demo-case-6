@@ -28,7 +28,7 @@ const emit = defineEmits<{
   toggleResource: [code: string]
   updateStep: [step: number]
   completeRecord: []
-  restart: []
+  showList: []
 }>()
 </script>
 
@@ -60,6 +60,6 @@ const emit = defineEmits<{
   <LogisticsTwinRecordPanel
     v-else
     :records="records"
-    @restart="emit('restart')"
+    @show-list="emit('showList')"
   />
 </template>

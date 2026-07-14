@@ -6,7 +6,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  restart: []
+  showList: []
 }>()
 </script>
 
@@ -76,10 +76,10 @@ const emit = defineEmits<{
       <button
         type="button"
         class="w-full rounded-md border border-hw-gray-lighter bg-hw-white-main px-4 py-3 text-s2 font-bold text-hw-gray-darker transition-colors hover:bg-hw-btn-hover"
-        @click="emit('restart')"
+        @click="emit('showList')"
       >
-        <i class="ti ti-refresh mr-1" aria-hidden="true" />
-        시나리오 다시 시작
+        <i class="ti ti-list mr-1" aria-hidden="true" />
+        목록으로 이동
       </button>
     </div>
   </div>

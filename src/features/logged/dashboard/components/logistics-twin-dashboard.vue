@@ -23,11 +23,11 @@ const {
   records,
   registerObstruction,
   requestMove,
-  restartScenario,
   selectObstruction,
   selectObstructionById,
   selectedDispatchResourceCodes,
   selectedObstruction,
+  showCompletedList,
   showObstructionList,
   startRegister,
   targetObstruction,
@@ -217,7 +217,7 @@ const {
                         @toggle-resource="toggleDispatchResource"
                         @update-step="currentStep = $event"
                         @complete-record="completeRecord"
-                        @restart="restartScenario"
+                        @show-list="showCompletedList"
                       />
                     </div>
                   </div>
