@@ -162,7 +162,7 @@ const {
                           물류 Twin
                         </p>
                         <h2 class="text-h6 font-bold text-hw-text-primary">
-                          도로 간섭물 이동 요청
+                          안전 통로 간섭물 이동 요청
                         </h2>
                       </div>
                     </div>
