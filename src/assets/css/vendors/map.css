@@ -203,7 +203,7 @@
 }
 
 .dashboard-map-marker--vehicle .dashboard-map-marker__tag {
-  gap: 4px;
+  padding: 0;
   background: var(--color-hw-blue-dark);
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--color-hw-blue-lighter) 55%, transparent),

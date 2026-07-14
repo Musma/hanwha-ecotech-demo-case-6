@@ -601,7 +601,6 @@ function updateMarkers() {
         icon.className = 'ti ti-truck'
         icon.setAttribute('aria-hidden', 'true')
         tag.append(icon)
-        tag.append(marker.label ?? marker.name ?? '')
       } else {
         tag.textContent = marker.label ?? marker.name ?? ''
       }
