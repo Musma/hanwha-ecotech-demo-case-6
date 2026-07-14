@@ -150,18 +150,22 @@ function resetMapView() {
   const map = mapRef.value
   if (!map || !mapLoaded.value) return
 
-  map.fitBounds(mapBounds.value, {
-    bearing: YARD_DEFAULT_BEARING,
-    padding: FIT_BOUNDS_PADDING,
-    duration: 600,
-  })
-  map.once('moveend', () => {
-    if (!mapRef.value || !mapLoaded.value) return
-    map.jumpTo({
+  const initialCamera = initialCameraRef.value
+  if (!initialCamera) {
+    map.fitBounds(mapBounds.value, {
       bearing: YARD_DEFAULT_BEARING,
-      pitch: 0,
-      zoom: map.getZoom() + INITIAL_ZOOM_OFFSET,
+      padding: FIT_BOUNDS_PADDING,
+      duration: 600,
     })
+    return
+  }
+
+  map.easeTo({
+    bearing: YARD_DEFAULT_BEARING,
+    center: initialCamera.center,
+    duration: 600,
+    pitch: 0,
+    zoom: initialCamera.zoom,
   })
 }
 
@@ -231,6 +235,10 @@ const markerRefs = shallowRef<Marker[]>([])
 const labelMarkerRefs = shallowRef<Marker[]>([])
 const liveMarkerRef = shallowRef<Marker | null>(null)
 const mapLoaded = shallowRef(false)
+const initialCameraRef = shallowRef<{
+  center: [number, number]
+  zoom: number
+} | null>(null)
 let stopWorkTrackAnimation: (() => void) | null = null
 let stopMarkerAnimations: Array<() => void> = []
 
@@ -793,6 +801,11 @@ function initializeMap() {
       pitch: 0,
       zoom: map.getZoom() + INITIAL_ZOOM_OFFSET,
     })
+    const initialCenter = map.getCenter()
+    initialCameraRef.value = {
+      center: [initialCenter.lng, initialCenter.lat],
+      zoom: map.getZoom(),
+    }
     mapLoaded.value = true
     ensureDashboardOverlayLayers()
     updateCadVisibility()
