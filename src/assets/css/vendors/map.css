@@ -172,6 +172,10 @@
   z-index: 10;
 }
 
+.dashboard-map-marker--vehicle {
+  z-index: 20;
+}
+
 .dashboard-map-marker__tag {
   position: relative;
   z-index: 2;

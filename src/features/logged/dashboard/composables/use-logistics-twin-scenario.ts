@@ -13,6 +13,9 @@ import {
 } from '@/features/logged/dashboard/constants/logistics-twin-data'
 import type { MapEntityMarkerItem } from '@/shared/types/map/yard-map'
 
+const NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_Y = -34
+const NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_X = 22
+
 export function useLogisticsTwinScenario() {
   const currentStep = shallowRef(1)
   const obstructions = shallowRef<LogisticsTwinObstruction[]>(
@@ -135,7 +138,12 @@ export function useLogisticsTwinScenario() {
               resource.group === '지게차' ? 'ti ti-forklift' : 'ti ti-truck',
             phys: waitingPosition,
             offset: isNewObstructionTarget
-              ? ([index % 2 === 0 ? -18 : 18, 0] as [number, number])
+              ? ([
+                  index % 2 === 0
+                    ? -NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_X
+                    : NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_X,
+                  NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_Y,
+                ] as [number, number])
               : undefined,
             tone: 'vehicle',
             updatesTrack: index === 0,
