@@ -3,7 +3,15 @@ import type { MapEntityMarkerMotion } from '@/shared/types/map/yard-map'
 import type { Marker } from 'maplibre-gl'
 
 type Coordinate = [number, number]
-type PositionUpdateHandler = (position: Coordinate) => void
+export type VehicleRouteAnimationPhase =
+  | 'approach'
+  | 'dwell'
+  | 'departure'
+  | 'done'
+type PositionUpdateHandler = (
+  position: Coordinate,
+  phase: VehicleRouteAnimationPhase,
+) => void
 
 function easeInOutCubic(progress: number) {
   return progress < 0.5
@@ -31,7 +39,7 @@ export function startVehicleRouteAnimation(
 ) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     marker.setLngLat(motion.destination)
-    onPositionUpdate?.(motion.destination)
+    onPositionUpdate?.(motion.destination, 'done')
     return () => undefined
   }
 
@@ -42,13 +50,16 @@ export function startVehicleRouteAnimation(
   let startedAt: number | null = null
   let lastPosition: Coordinate | null = null
 
-  const updatePosition = (position: Coordinate) => {
+  const updatePosition = (
+    position: Coordinate,
+    phase: VehicleRouteAnimationPhase,
+  ) => {
     marker.setLngLat(position)
     if (lastPosition?.[0] === position[0] && lastPosition?.[1] === position[1])
       return
 
     lastPosition = position
-    onPositionUpdate?.(position)
+    onPositionUpdate?.(position, phase)
   }
 
   const animate = (timestamp: number) => {
@@ -58,9 +69,10 @@ export function startVehicleRouteAnimation(
     if (elapsed < approachEnd) {
       updatePosition(
         interpolateCoordinate(start, motion.stop, elapsed / approachEnd),
+        'approach',
       )
     } else if (elapsed < dwellEnd) {
-      updatePosition(motion.stop)
+      updatePosition(motion.stop, 'dwell')
     } else if (elapsed < motionEnd) {
       updatePosition(
         interpolateCoordinate(
@@ -68,9 +80,10 @@ export function startVehicleRouteAnimation(
           motion.destination,
           (elapsed - dwellEnd) / motion.departureDurationMs,
         ),
+        'departure',
       )
     } else {
-      updatePosition(motion.destination)
+      updatePosition(motion.destination, 'done')
       animationFrame = null
       return
     }

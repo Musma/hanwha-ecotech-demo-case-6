@@ -15,6 +15,38 @@ import type { MapEntityMarkerItem } from '@/shared/types/map/yard-map'
 
 const NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_Y = -34
 const NEW_OBSTRUCTION_VEHICLE_MARKER_OFFSET_X = 22
+const TRANSPORTER_GROUP = '트랜스포터'
+
+function getDispatchVehicleWaitingPosition({
+  destination,
+  index,
+  isNewObstructionTarget,
+  target,
+}: {
+  destination: { lngLat: [number, number] }
+  index: number
+  isNewObstructionTarget: boolean
+  target: LogisticsTwinObstruction
+}): [number, number] {
+  if (isNewObstructionTarget) return target.lngLat
+
+  const routeRatio = 0.25 + index * 0.1
+  return [
+    target.lngLat[0] + (destination.lngLat[0] - target.lngLat[0]) * routeRatio,
+    target.lngLat[1] + (destination.lngLat[1] - target.lngLat[1]) * routeRatio,
+  ]
+}
+
+function isSameCoordinate(a: [number, number], b: [number, number]) {
+  return a[0] === b[0] && a[1] === b[1]
+}
+
+function compactRouteCoordinates(coordinates: Array<[number, number]>) {
+  return coordinates.filter(
+    (coordinate, index) =>
+      index === 0 || !isSameCoordinate(coordinate, coordinates[index - 1]),
+  )
+}
 
 export function useLogisticsTwinScenario() {
   const currentStep = shallowRef(1)
@@ -120,16 +152,13 @@ export function useLogisticsTwinScenario() {
     )
     const vehicleMarkers: MapEntityMarkerItem[] = target
       ? selectedDispatchResources.map((resource, index) => {
-          const isTransporter = resource.group === '트랜스포터'
-          const routeRatio = 0.25 + index * 0.1
-          const waitingPosition: [number, number] = isNewObstructionTarget
-            ? target.lngLat
-            : [
-                target.lngLat[0] +
-                  (destination.lngLat[0] - target.lngLat[0]) * routeRatio,
-                target.lngLat[1] +
-                  (destination.lngLat[1] - target.lngLat[1]) * routeRatio,
-              ]
+          const isTransporter = resource.group === TRANSPORTER_GROUP
+          const waitingPosition = getDispatchVehicleWaitingPosition({
+            destination,
+            index,
+            isNewObstructionTarget,
+            target,
+          })
 
           return {
             id: `scenario-vehicle-${resource.code}`,
@@ -177,10 +206,30 @@ export function useLogisticsTwinScenario() {
 
   const trackCoordinates = computed<Array<[number, number]>>(() => {
     if (currentStep.value !== 5 || !targetObstruction.value) return []
-    return [
-      targetObstruction.value.lngLat,
-      getLogisticsTwinDestination(targetObstruction.value).lngLat,
-    ]
+    const target = targetObstruction.value
+    const destination = getLogisticsTwinDestination(target)
+    const isNewObstructionTarget =
+      target.id === LOGISTICS_TWIN_NEW_OBSTRUCTION_ID
+    const transporterIndex = LOGISTICS_TWIN_DISPATCH_RESOURCES.findIndex(
+      (resource) =>
+        resource.group === TRANSPORTER_GROUP &&
+        selectedDispatchResourceCodes.value.includes(resource.code),
+    )
+    const routeStart =
+      transporterIndex >= 0
+        ? getDispatchVehicleWaitingPosition({
+            destination,
+            index: transporterIndex,
+            isNewObstructionTarget,
+            target,
+          })
+        : target.lngLat
+
+    return compactRouteCoordinates([
+      routeStart,
+      target.lngLat,
+      destination.lngLat,
+    ])
   })
 
   function updateObstructionStatus(

@@ -12,7 +12,10 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 
 import type { LogisticsTwinPendingLocation } from '@/features/logged/dashboard/constants/logistics-twin-data'
 import { createDashboardMapMarkerInfoElement } from '@/features/logged/dashboard/utils/map-marker-info'
-import { startVehicleRouteAnimation } from '@/features/logged/dashboard/utils/vehicle-route-animation'
+import {
+  startVehicleRouteAnimation,
+  type VehicleRouteAnimationPhase,
+} from '@/features/logged/dashboard/utils/vehicle-route-animation'
 import {
   WORK_TRACK_BASE_DASH_ARRAY,
   WORK_TRACK_FLOW_LAYER_ID,
@@ -482,12 +485,29 @@ function updateWorkTrack() {
   }
 }
 
-function updateWorkTrackStart(
+function isSameTrackCoordinate(a: [number, number], b: [number, number]) {
+  return a[0] === b[0] && a[1] === b[1]
+}
+
+function compactTrackCoordinates(coordinates: Array<[number, number]>) {
+  return coordinates.filter(
+    (coordinate, index) =>
+      index === 0 || !isSameTrackCoordinate(coordinate, coordinates[index - 1]),
+  )
+}
+
+function updateWorkTrackFromVehicle(
   position: [number, number],
-  destination: [number, number],
+  motion: MapEntityMarkerItem['motion'],
+  phase: VehicleRouteAnimationPhase,
 ) {
   const map = mapRef.value
-  if (!map || !mapLoaded.value) return
+  if (!map || !mapLoaded.value || !motion) return
+
+  const coordinates =
+    phase === 'approach' || phase === 'dwell'
+      ? compactTrackCoordinates([position, motion.stop, motion.destination])
+      : compactTrackCoordinates([position, motion.destination])
 
   const source = map.getSource(WORK_TRACK_SOURCE_ID) as
     | GeoJSONSource
@@ -499,7 +519,7 @@ function updateWorkTrackStart(
         type: 'Feature',
         geometry: {
           type: 'LineString',
-          coordinates: [position, destination],
+          coordinates,
         },
         properties: {},
       },
@@ -637,8 +657,8 @@ function updateMarkers() {
             motion,
             marker.updatesTrack === false
               ? undefined
-              : (position) =>
-                  updateWorkTrackStart(position, motion.destination),
+              : (position, phase) =>
+                  updateWorkTrackFromVehicle(position, motion, phase),
           ),
         )
       }
