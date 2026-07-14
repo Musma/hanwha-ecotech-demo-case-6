@@ -18,7 +18,7 @@ export function useLogisticsTwinScenario() {
   )
   const selectedId = shallowRef('')
   const targetId = shallowRef('')
-  const selectedDispatchResourceCodes = shallowRef<string[]>([])
+  const selectedDispatchResourceCode = shallowRef('')
   const dispatchConfirmed = shallowRef(false)
   const pendingLocation = shallowRef<LogisticsTwinPendingLocation | null>(null)
   const records = shallowRef<LogisticsTwinRecord[]>([])
@@ -230,23 +230,19 @@ export function useLogisticsTwinScenario() {
     targetId.value = item.id
     updateObstructionStatus(item.id, '이동요청')
     currentStep.value = 5
-    selectedDispatchResourceCodes.value = []
+    selectedDispatchResourceCode.value = ''
     dispatchConfirmed.value = false
     showToast('지번체계 기반 간섭물 이동을 요청하였습니다')
   }
 
-  function toggleDispatchResource(code: string) {
+  function selectDispatchResource(code: string) {
     if (dispatchConfirmed.value) return
-
-    selectedDispatchResourceCodes.value =
-      selectedDispatchResourceCodes.value.includes(code)
-        ? selectedDispatchResourceCodes.value.filter((item) => item !== code)
-        : [...selectedDispatchResourceCodes.value, code]
+    selectedDispatchResourceCode.value = code
   }
 
   function confirmDispatch() {
-    if (selectedDispatchResourceCodes.value.length === 0) {
-      showToast('배차 자원을 한 대 이상 선택해 주세요')
+    if (!selectedDispatchResourceCode.value) {
+      showToast('배차 자원을 한 대 선택해 주세요')
       return
     }
 
@@ -264,7 +260,7 @@ export function useLogisticsTwinScenario() {
           id: target.id,
           name: target.name,
           jibun: target.jibun,
-          equip: selectedDispatchResourceCodes.value.join(', '),
+          equip: selectedDispatchResourceCode.value,
           at: '2026.05.22 09:35',
         },
         ...records.value,
@@ -282,7 +278,7 @@ export function useLogisticsTwinScenario() {
     }))
     selectedId.value = ''
     targetId.value = ''
-    selectedDispatchResourceCodes.value = []
+    selectedDispatchResourceCode.value = ''
     dispatchConfirmed.value = false
     pendingLocation.value = null
     records.value = []
@@ -302,13 +298,13 @@ export function useLogisticsTwinScenario() {
     requestMove,
     restartScenario,
     selectObstruction,
-    selectedDispatchResourceCodes,
+    selectedDispatchResourceCode,
     selectedObstruction,
     showObstructionList,
     startRegister,
     targetObstruction,
     toastMessage,
-    toggleDispatchResource,
+    selectDispatchResource,
     trackCoordinates,
     unlockTablet,
     visibleObstructions,

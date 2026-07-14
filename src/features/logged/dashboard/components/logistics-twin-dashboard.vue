@@ -24,14 +24,14 @@ const {
   requestMove,
   restartScenario,
   selectObstruction,
-  selectedDispatchResourceCodes,
+  selectedDispatchResourceCode,
   selectedObstruction,
   showObstructionList,
   startRegister,
   targetObstruction,
   toastMessage,
   trackCoordinates,
-  toggleDispatchResource,
+  selectDispatchResource,
   unlockTablet,
   visibleObstructions,
 } = useLogisticsTwinScenario()
@@ -203,14 +203,14 @@ const {
                         :selected-obstruction="selectedObstruction"
                         :target-obstruction="targetObstruction"
                         :dispatch-confirmed="dispatchConfirmed"
-                        :selected-resource-codes="selectedDispatchResourceCodes"
+                        :selected-resource-code="selectedDispatchResourceCode"
                         :pending-location="pendingLocation"
                         :records="records"
                         @register-obstruction="registerObstruction"
                         @select-obstruction="selectObstruction"
                         @request-move="requestMove"
                         @confirm-dispatch="confirmDispatch"
-                        @toggle-resource="toggleDispatchResource"
+                        @select-resource="selectDispatchResource"
                         @update-step="currentStep = $event"
                         @complete-record="completeRecord"
                         @restart="restartScenario"
