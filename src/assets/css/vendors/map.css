@@ -154,6 +154,20 @@
   pointer-events: none;
 }
 
+.dashboard-map-marker--interactive {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.dashboard-map-marker--interactive:focus-visible {
+  outline: none;
+}
+
+.dashboard-map-marker--interactive:focus-visible .dashboard-map-marker__tag {
+  outline: 3px solid var(--color-hw-orange-main);
+  outline-offset: 3px;
+}
+
 .dashboard-map-marker__tag {
   position: relative;
   z-index: 2;

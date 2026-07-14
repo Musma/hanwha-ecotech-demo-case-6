@@ -79,6 +79,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   pickLocation: [location: LogisticsTwinPendingLocation]
+  selectMarker: [id: string]
 }>()
 
 const MAP_VIEW_COORDINATES: [
@@ -563,8 +564,20 @@ function updateMarkers() {
             : marker.tone === 'vehicle'
               ? 'dashboard-map-marker--vehicle'
               : 'dashboard-map-marker--warning'
-      el.className = `dashboard-map-marker ${markerToneClass}${marker.selected ? ' dashboard-map-marker--selected' : ''}`
+      el.className = `dashboard-map-marker ${markerToneClass}${marker.selected ? ' dashboard-map-marker--selected' : ''}${marker.selectable ? ' dashboard-map-marker--interactive' : ''}`
       el.title = marker.name ?? marker.label ?? ''
+
+      if (marker.selectable && marker.id) {
+        const markerId = marker.id
+        const selectMarker = () => emit('selectMarker', markerId)
+        el.addEventListener('click', selectMarker)
+        el.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return
+
+          event.preventDefault()
+          selectMarker()
+        })
+      }
 
       if (marker.selected && marker.info) {
         el.append(createDashboardMapMarkerInfoElement(marker.info))
@@ -597,6 +610,15 @@ function updateMarkers() {
       const mapMarker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat([marker.phys[0], marker.phys[1]])
         .addTo(map)
+      if (marker.selectable) {
+        el.role = 'button'
+        el.tabIndex = 0
+        el.ariaLabel = `${marker.label ?? marker.name ?? '간섭물'} 지도 마커 선택`
+      } else {
+        el.removeAttribute('role')
+        el.removeAttribute('tabindex')
+        el.removeAttribute('aria-label')
+      }
       const motion = marker.motion
       if (motion) {
         stopMarkerAnimations.push(

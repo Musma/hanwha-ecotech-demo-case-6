@@ -54,6 +54,7 @@ export interface MapEntityMarkerItem {
   name?: string
   phys?: number[]
   selected?: boolean
+  selectable?: boolean
   focusOnSelect?: boolean
   info?: MapEntityMarkerInfo
   showWave?: boolean

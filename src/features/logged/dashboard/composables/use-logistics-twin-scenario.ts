@@ -58,6 +58,7 @@ export function useLogisticsTwinScenario() {
         name: item.name,
         phys: item.lngLat,
         selected: currentStep.value >= 4 && item.id === selectedId.value,
+        selectable: currentStep.value === 4,
         focusOnSelect: true,
         info:
           currentStep.value === 4
@@ -228,6 +229,15 @@ export function useLogisticsTwinScenario() {
     showToast(`${item.label} 간섭물을 선택했습니다`)
   }
 
+  function selectObstructionById(id: string) {
+    if (currentStep.value !== 4) return
+
+    const item = visibleObstructions.value.find(
+      (obstruction) => obstruction.id === id,
+    )
+    if (item) selectObstruction(item)
+  }
+
   function requestMove(item: LogisticsTwinObstruction) {
     selectedId.value = item.id
     targetId.value = item.id
@@ -301,6 +311,7 @@ export function useLogisticsTwinScenario() {
     requestMove,
     restartScenario,
     selectObstruction,
+    selectObstructionById,
     selectedDispatchResourceCode,
     selectedObstruction,
     showObstructionList,
