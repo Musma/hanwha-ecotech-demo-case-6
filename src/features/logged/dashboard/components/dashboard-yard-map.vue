@@ -101,6 +101,9 @@ const WORK_TRACK_FIT_BOUNDS_PADDING = {
   left: 424,
 }
 const INITIAL_ZOOM_OFFSET = 1
+const SELECTED_MARKER_FOCUS_ZOOM_INCREMENT = 1
+const SELECTED_MARKER_MAX_FOCUS_ZOOM = 17
+const SELECTED_MARKER_FOCUS_DURATION_MS = 650
 const YARD_GRID_SOURCE_ID = 'dashboard-yard-grid'
 const YARD_GRID_LAYER_ID = 'dashboard-yard-grid'
 const JIBUN_POLYGON_SOURCE_ID = 'dashboard-jibun-polygons'
@@ -603,6 +606,32 @@ function updateMarkers() {
     .filter((marker): marker is Marker => Boolean(marker))
 }
 
+function focusSelectedMarker() {
+  const map = mapRef.value
+  if (!map || !mapLoaded.value) return
+
+  const marker = props.mapMarkers.find(
+    (item) => item.selected && item.focusOnSelect,
+  )
+  if (!marker || !Array.isArray(marker.phys) || marker.phys.length < 2) return
+
+  const [lng, lat] = marker.phys
+  if (!Number.isFinite(lng) || !Number.isFinite(lat)) return
+
+  const currentZoom = map.getZoom()
+  map.easeTo({
+    center: [lng, lat],
+    zoom: Math.max(
+      currentZoom,
+      Math.min(
+        currentZoom + SELECTED_MARKER_FOCUS_ZOOM_INCREMENT,
+        SELECTED_MARKER_MAX_FOCUS_ZOOM,
+      ),
+    ),
+    duration: SELECTED_MARKER_FOCUS_DURATION_MS,
+  })
+}
+
 function updateLiveMarker() {
   const map = mapRef.value
   if (!map || !mapLoaded.value) return
@@ -686,6 +715,7 @@ function initializeMap() {
     updateGridVisibility()
     updateJibunLayers()
     updateMarkers()
+    focusSelectedMarker()
     updateLiveMarker()
     updateWorkTrack()
     updatePickModeCursor()
@@ -712,6 +742,7 @@ function syncMapStyle() {
     updateGridVisibility()
     updateJibunLayers()
     updateMarkers()
+    focusSelectedMarker()
     updateLiveMarker()
     updateWorkTrack()
     updatePickModeCursor()
@@ -744,6 +775,13 @@ watch(
   () => props.mapMarkers,
   () => updateMarkers(),
   { deep: true },
+)
+
+watch(
+  () =>
+    props.mapMarkers.find((marker) => marker.selected && marker.focusOnSelect)
+      ?.id,
+  () => focusSelectedMarker(),
 )
 
 watch(
