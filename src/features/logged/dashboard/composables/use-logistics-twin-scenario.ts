@@ -59,24 +59,27 @@ export function useLogisticsTwinScenario() {
         phys: item.lngLat,
         selected: currentStep.value >= 4 && item.id === selectedId.value,
         focusOnSelect: true,
-        info: {
-          label: item.label,
-          title: item.name,
-          status: item.status,
-          imageSrc: item.photo,
-          imageAlt: `${item.name} 현장 사진`,
-          rows: [
-            { label: '종류', value: item.kind },
-            { label: '위치', value: item.jibun },
-            { label: '발견시기', value: item.foundAt },
-            {
-              label: '간섭기간',
-              value: `${item.days}일 (${getLogisticsTwinToneLabel(item.days)})`,
-            },
-            { label: '보고자', value: item.reporter },
-          ],
-          description: item.detail,
-        },
+        info:
+          currentStep.value === 4
+            ? {
+                label: item.label,
+                title: item.name,
+                status: item.status,
+                imageSrc: item.photo,
+                imageAlt: `${item.name} 현장 사진`,
+                rows: [
+                  { label: '종류', value: item.kind },
+                  { label: '위치', value: item.jibun },
+                  { label: '발견시기', value: item.foundAt },
+                  {
+                    label: '간섭기간',
+                    value: `${item.days}일 (${getLogisticsTwinToneLabel(item.days)})`,
+                  },
+                  { label: '보고자', value: item.reporter },
+                ],
+                description: item.detail,
+              }
+            : undefined,
         showWave: false,
         tone:
           getLogisticsTwinTone(item.days) === 'danger'
